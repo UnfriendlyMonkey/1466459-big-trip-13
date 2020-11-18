@@ -1,7 +1,7 @@
 # Проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Андрей Середа](https://up.htmlacademy.ru/ecmascript/13/user/1466459).
-* Наставник: `Неизвестно`.
+* Наставник: [Данил Чушко](https://htmlacademy.ru/profile/id564149).
 
 ---
 
