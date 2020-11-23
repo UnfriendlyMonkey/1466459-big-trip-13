@@ -91,16 +91,12 @@ const DESTINATIONS = {
 
 export const generateEventItem = () => {
   const eventType = getRandomEl(Object.keys(EVENT_TYPES));
-  // const eventOffers = EVENT_TYPES[eventType];
   const destinationName = getRandomEl(Object.keys(DESTINATIONS));
-  // const description = DESTINATIONS[destinationName];
-  // const startTime = getRandomInt(0, 2358);
-
 
   const eventItem = {
     event: {
       type: EVENT_TYPES[eventType].name,
-      offers: EVENT_TYPES[eventType].offers
+      offers: new Map(EVENT_TYPES[eventType].offers)
     },
     destination: {
       name: destinationName,
