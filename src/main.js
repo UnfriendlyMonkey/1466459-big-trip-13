@@ -7,6 +7,8 @@ import {createTripEventItemTemplate} from "./view/trip-event-item.js";
 import {createAddPointFormTemplate} from "./view/add-point.js";
 import {createEditPointTemplate} from "./view/edit-point.js";
 
+import {generateEventItem} from "./mock/event-item.js";
+
 const INITIAL_POINTS_NO = 3;
 
 const render = (container, template, place) => {
@@ -32,4 +34,8 @@ render(tripListElement, createEditPointTemplate(), `beforeend`);
 
 for (let i = 0; i < INITIAL_POINTS_NO; i++) {
   render(tripListElement, createTripEventItemTemplate(), `beforeend`);
+}
+
+for (let i = 0; i < 20; i++) {
+  console.log(generateEventItem());
 }
