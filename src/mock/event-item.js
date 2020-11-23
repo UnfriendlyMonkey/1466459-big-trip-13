@@ -1,4 +1,4 @@
-import {getRandomEl, getRandomArray} from "../util.js";
+import {getRandomEl, getRandomArray, getRandomInt} from "../util.js";
 
 const OPTIONS = {
   option1: 250,
@@ -64,6 +64,15 @@ const DESCRIPTIONS = descriptionProto.split(`. `);
 
 const getRandomDescription = () => getRandomArray(DESCRIPTIONS, 5).join(`. `) + `.`;
 
+const getRandomPhotos = () => {
+  const photos = [];
+  const count = getRandomInt(1, 9);
+  for (let i = 0; i <= count; i++) {
+    photos[i] = `http://picsum.photos/248/152?r=${Math.random()}`;
+  }
+  return photos;
+};
+
 const DESTINATIONS = {
   Paris: getRandomDescription(),
   London: getRandomDescription(),
@@ -72,16 +81,35 @@ const DESTINATIONS = {
   Barcelona: getRandomDescription(),
   Portu: getRandomDescription(),
   Vien: getRandomDescription(),
+  Tokyo: getRandomDescription(),
   Ivanovo: getRandomDescription(),
   Mars: getRandomDescription(),
-  Deneb: getRandomDescription()
+  Deneb: getRandomDescription(),
+  Sidney: getRandomDescription()
 };
 
 
 export const generateEventItem = () => {
+  const eventType = getRandomEl(Object.keys(EVENT_TYPES));
+  // const eventOffers = EVENT_TYPES[eventType];
+  const destinationName = getRandomEl(Object.keys(DESTINATIONS));
+  // const description = DESTINATIONS[destinationName];
+  // const startTime = getRandomInt(0, 2358);
+
+
   const eventItem = {
-    event: getRandomEl(Object.values(EVENT_TYPES)),
-    destination: getRandomEl(Object.entries(DESTINATIONS)),
+    event: {
+      type: EVENT_TYPES[eventType].name,
+      offers: EVENT_TYPES[eventType].offers
+    },
+    destination: {
+      name: destinationName,
+      description: DESTINATIONS[destinationName],
+      photos: getRandomPhotos()
+    },
+    startTime: null,
+    endTime: null,
+    price: getRandomInt(100, 2500),
   };
   return eventItem;
 };

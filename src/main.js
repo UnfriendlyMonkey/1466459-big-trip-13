@@ -36,6 +36,7 @@ for (let i = 0; i < INITIAL_POINTS_NO; i++) {
   render(tripListElement, createTripEventItemTemplate(), `beforeend`);
 }
 
+const eventItemsList = [];
 for (let i = 0; i < 20; i++) {
-  console.log(generateEventItem());
+  eventItemsList[i] = generateEventItem();
 }
