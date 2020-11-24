@@ -1,4 +1,5 @@
 import {getRandomEl, getRandomArray, getRandomInt} from "../util.js";
+import dayjs from "dayjs";
 
 const OPTIONS = {
   option1: 250,
@@ -95,10 +96,15 @@ const DESTINATIONS = {
   Sidney: getRandomDescription()
 };
 
+const getRandomDate = (startDate, maxGap = 168) => {
+  const daysGap = getRandomInt(1, maxGap);
+  return dayjs(startDate).add(daysGap, `hour`);
+};
 
 export const generateEventItem = () => {
   const eventType = getRandomEl(Object.keys(EVENT_TYPES));
   const destinationName = getRandomEl(Object.keys(DESTINATIONS));
+  const startTime = getRandomDate(dayjs(), 168);
 
   const eventItem = {
     event: {
@@ -110,12 +116,10 @@ export const generateEventItem = () => {
       description: DESTINATIONS[destinationName],
       photos: getRandomPhotos()
     },
-    startTime: null,
-    endTime: null,
+    startTime: startTime.toDate(),
+    endTime: getRandomDate(startTime, 168).toDate(),
     price: getRandomInt(100, 2500),
     isFavourite: false
   };
   return eventItem;
 };
-
-
