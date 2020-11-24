@@ -40,3 +40,5 @@ const eventItemsList = [];
 for (let i = 0; i < 20; i++) {
   eventItemsList[i] = generateEventItem();
 }
+
+console.log(eventItemsList);

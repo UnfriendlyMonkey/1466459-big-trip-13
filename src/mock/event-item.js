@@ -13,7 +13,14 @@ const OPTIONS = {
   option10: 400
 };
 
-const getOffers = () => getRandomArray(Object.entries(OPTIONS), 5);
+const getOffers = () => {
+  let offers = [];
+  const isOffers = getRandomInt(0, 2);
+  if (isOffers) {
+    offers = getRandomArray(Object.entries(OPTIONS), 5);
+  }
+  return offers;
+};
 
 const EVENT_TYPES = {
   taxi: {
@@ -106,6 +113,7 @@ export const generateEventItem = () => {
     startTime: null,
     endTime: null,
     price: getRandomInt(100, 2500),
+    isFavourite: false
   };
   return eventItem;
 };
