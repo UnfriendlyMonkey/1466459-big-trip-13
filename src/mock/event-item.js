@@ -2,21 +2,51 @@ import {getRandomEl, getRandomArray, getRandomInt} from "../util.js";
 import dayjs from "dayjs";
 
 const OPTIONS = {
-  option1: 250,
-  option2: 300,
-  option3: 1000,
-  option4: 750,
-  option5: 500,
-  option6: 100,
-  option7: 900,
-  option8: 50,
-  option9: 200,
-  option10: 400
+  option1: {
+    price: 25,
+    isOrdered: Boolean(getRandomInt(0, 2))
+  },
+  option2: {
+    price: 35,
+    isOrdered: Boolean(getRandomInt(0, 2))
+  },
+  option3: {
+    price: 90,
+    isOrdered: Boolean(getRandomInt(0, 2))
+  },
+  option4: {
+    price: 75,
+    isOrdered: Boolean(getRandomInt(0, 2))
+  },
+  option5: {
+    price: 10,
+    isOrdered: Boolean(getRandomInt(0, 2))
+  },
+  option6: {
+    price: 20,
+    isOrdered: Boolean(getRandomInt(0, 2))
+  },
+  option7: {
+    price: 80,
+    isOrdered: Boolean(getRandomInt(0, 2))
+  },
+  option8: {
+    price: 65,
+    isOrdered: Boolean(getRandomInt(0, 2))
+  },
+  option9: {
+    price: 40,
+    isOrdered: Boolean(getRandomInt(0, 2))
+  },
+  option10: {
+    price: 50,
+    isOrdered: Boolean(getRandomInt(0, 2))
+  }
 };
 
 const getOffers = () => {
   let offers = [];
-  const isOffers = getRandomInt(0, 2);
+  const isOffers = getRandomInt(0, 4);
   if (isOffers) {
     offers = getRandomArray(Object.entries(OPTIONS), 5);
   }
@@ -118,8 +148,8 @@ export const generateEventItem = () => {
     },
     startTime: startTime.toDate(),
     endTime: getRandomDate(startTime, 1500).toDate(),
-    price: getRandomInt(100, 2500),
-    isFavourite: false
+    price: getRandomInt(50, 1000),
+    isFavourite: Boolean(getRandomInt(0, 2))
   };
   return eventItem;
 };

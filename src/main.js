@@ -9,7 +9,7 @@ import {createEditPointTemplate} from "./view/edit-point.js";
 
 import {generateEventItem} from "./mock/event-item.js";
 
-const INITIAL_POINTS_NO = 3;
+const INITIAL_POINTS_NO = 5;
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -30,11 +30,11 @@ const tripListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
 render(tripListElement, createAddPointFormTemplate(), `afterbegin`);
 
-render(tripListElement, createEditPointTemplate(), `beforeend`);
-
 const eventItemsList = new Array(25).fill().map(generateEventItem);
 
-for (let i = 0; i < INITIAL_POINTS_NO; i++) {
+render(tripListElement, createEditPointTemplate(eventItemsList[0]), `beforeend`);
+
+for (let i = 1; i < INITIAL_POINTS_NO; i++) {
   render(tripListElement, createTripEventItemTemplate(eventItemsList[i]), `beforeend`);
 }
 
