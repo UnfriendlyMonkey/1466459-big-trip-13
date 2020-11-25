@@ -42,10 +42,4 @@ for (let i = 1; i < INITIAL_POINTS_NO; i++) {
   render(tripListElement, createTripEventItemTemplate(eventItemsList[i]), `beforeend`);
 }
 
-// const eventItemsList = [];
-// for (let i = 0; i < 20; i++) {
-//   eventItemsList[i] = generateEventItem();
-// }
-
-
 console.log(eventItemsList);

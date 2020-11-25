@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import {durationString} from "../util.js";
 
 export const createTripEventItemTemplate = (item) => {
 
@@ -8,17 +9,17 @@ export const createTripEventItemTemplate = (item) => {
   const startDate = dayjs(startTime).format(`MMM D`);
   const start = dayjs(startTime).format(`HH:mm`);
   const end = dayjs(endTime).format(`HH:mm`);
-  const duration = dayjs(endTime).diff(dayjs(startTime), `minute`);
-  const durationH = Math.floor(duration / 60);
-  const durationM = duration % 60;
-  const durationString = () => {
-    let result = ``;
-    if (durationH) {
-      result += `${durationH}H `;
-    }
-    result += `${durationM}M`;
-    return result;
-  };
+  // const durationString = (beginning, ending) => {
+  //   const duration = dayjs(ending).diff(dayjs(beginning), `minute`);
+  //   const durationH = Math.floor(duration / 60);
+  //   const durationM = duration % 60;
+  //   let result = ``;
+  //   if (durationH) {
+  //     result += `${durationH}H `;
+  //   }
+  //   result += `${durationM}M`;
+  //   return result;
+  // };
 
   const isHidden = event.offers.length > 0 ? `` : `visually-hidden`;
 
@@ -55,7 +56,7 @@ export const createTripEventItemTemplate = (item) => {
           &mdash;
           <time class="event__end-time" datetime="2019-03-18T11:00">${end}</time>
         </p>
-        <p class="event__duration">${durationString()}</p>
+        <p class="event__duration">${durationString(startTime, endTime)}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${price}</span>
