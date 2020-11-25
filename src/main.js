@@ -30,7 +30,11 @@ const tripListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
 render(tripListElement, createAddPointFormTemplate(), `afterbegin`);
 
-const eventItemsList = new Array(25).fill().map(generateEventItem);
+const eventItems = new Array(25).fill().map(generateEventItem);
+
+const eventItemsList = eventItems.slice().sort(function (a, b) {
+  return a.startTime - b.startTime;
+});
 
 render(tripListElement, createEditPointTemplate(eventItemsList[0]), `beforeend`);
 

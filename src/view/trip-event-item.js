@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 export const createTripEventItemTemplate = (item) => {
 
   const {startTime, endTime, price, isFavourite, event, destination} = item;
-  const type = item.event.type;
+  const type = event.type;
   const placeName = destination.name;
   const startDate = dayjs(startTime).format(`MMM D`);
   const start = dayjs(startTime).format(`HH:mm`);
@@ -20,7 +20,7 @@ export const createTripEventItemTemplate = (item) => {
     return result;
   };
 
-  const isHidden = event.offers ? `` : `visually-hidden`;
+  const isHidden = event.offers.length > 0 ? `` : `visually-hidden`;
 
   const createOffersListTemplate = (arr) => {
     let fragment = ``;

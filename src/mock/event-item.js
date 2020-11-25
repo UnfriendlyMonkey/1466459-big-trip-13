@@ -46,7 +46,7 @@ const OPTIONS = {
 
 const getOffers = () => {
   let offers = [];
-  const isOffers = getRandomInt(0, 4);
+  const isOffers = getRandomInt(0, 5);
   if (isOffers) {
     offers = getRandomArray(Object.entries(OPTIONS), 5);
   }
@@ -100,7 +100,7 @@ const descriptionProto = `Lorem ipsum dolor sit amet, consectetur adipiscing eli
 
 const DESCRIPTIONS = descriptionProto.split(`. `);
 
-const getRandomDescription = () => getRandomArray(DESCRIPTIONS, 5).join(`. `) + `.`;
+const getRandomDescription = () => getRandomInt(0, 5) ? getRandomArray(DESCRIPTIONS, 5).join(`. `) + `.` : ``;
 
 const getRandomPhotos = () => {
   const photos = [];
