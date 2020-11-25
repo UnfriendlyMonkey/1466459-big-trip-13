@@ -32,13 +32,16 @@ render(tripListElement, createAddPointFormTemplate(), `afterbegin`);
 
 render(tripListElement, createEditPointTemplate(), `beforeend`);
 
+const eventItemsList = new Array(25).fill().map(generateEventItem);
+
 for (let i = 0; i < INITIAL_POINTS_NO; i++) {
-  render(tripListElement, createTripEventItemTemplate(), `beforeend`);
+  render(tripListElement, createTripEventItemTemplate(eventItemsList[i]), `beforeend`);
 }
 
-const eventItemsList = [];
-for (let i = 0; i < 20; i++) {
-  eventItemsList[i] = generateEventItem();
-}
+// const eventItemsList = [];
+// for (let i = 0; i < 20; i++) {
+//   eventItemsList[i] = generateEventItem();
+// }
+
 
 console.log(eventItemsList);

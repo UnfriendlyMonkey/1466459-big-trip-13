@@ -96,15 +96,15 @@ const DESTINATIONS = {
   Sidney: getRandomDescription()
 };
 
-const getRandomDate = (startDate, maxGap = 168) => {
+const getRandomDate = (startDate, maxGap = 10000) => {
   const daysGap = getRandomInt(1, maxGap);
-  return dayjs(startDate).add(daysGap, `hour`);
+  return dayjs(startDate).add(daysGap, `minute`);
 };
 
 export const generateEventItem = () => {
   const eventType = getRandomEl(Object.keys(EVENT_TYPES));
   const destinationName = getRandomEl(Object.keys(DESTINATIONS));
-  const startTime = getRandomDate(dayjs(), 168);
+  const startTime = getRandomDate(dayjs(), 10000);
 
   const eventItem = {
     event: {
@@ -117,7 +117,7 @@ export const generateEventItem = () => {
       photos: getRandomPhotos()
     },
     startTime: startTime.toDate(),
-    endTime: getRandomDate(startTime, 168).toDate(),
+    endTime: getRandomDate(startTime, 1500).toDate(),
     price: getRandomInt(100, 2500),
     isFavourite: false
   };

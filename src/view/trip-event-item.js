@@ -1,21 +1,42 @@
-export const createTripEventItemTemplate = () => {
+import dayjs from "dayjs";
+
+export const createTripEventItemTemplate = (item) => {
+
+  const {startTime, endTime, price} = item;
+  const type = item.event.type;
+  const destination = item.destination.name;
+  const startDate = dayjs(startTime).format(`MMM D`);
+  const start = dayjs(startTime).format(`HH:mm`);
+  const end = dayjs(endTime).format(`HH:mm`);
+  const duration = dayjs(endTime).diff(dayjs(startTime), `minute`);
+  const durationH = Math.floor(duration / 60);
+  const durationM = duration % 60;
+  const durationString = () => {
+    let result = ``;
+    if (durationH) {
+      result += `${durationH}H `;
+    }
+    result += `${durationM}M`;
+    return result;
+  }
+
   return `<li class="trip-events__item">
     <div class="event">
-      <time class="event__date" datetime="2019-03-18">MAR 18</time>
+      <time class="event__date" datetime="2019-03-18">${startDate}</time>
       <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+        <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">Taxi Amsterdam</h3>
+      <h3 class="event__title">${type} ${destination}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
+          <time class="event__start-time" datetime="2019-03-18T10:30">${start}</time>
           &mdash;
-          <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+          <time class="event__end-time" datetime="2019-03-18T11:00">${end}</time>
         </p>
-        <p class="event__duration">30M</p>
+        <p class="event__duration">${durationString()}</p>
       </div>
       <p class="event__price">
-        &euro;&nbsp;<span class="event__price-value">20</span>
+        &euro;&nbsp;<span class="event__price-value">${price}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
