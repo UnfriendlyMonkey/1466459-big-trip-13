@@ -2,9 +2,9 @@ import dayjs from "dayjs";
 
 export const createTripEventItemTemplate = (item) => {
 
-  const {startTime, endTime, price} = item;
+  const {startTime, endTime, price, isFavourite, event, destination} = item;
   const type = item.event.type;
-  const destination = item.destination.name;
+  const placeName = destination.name;
   const startDate = dayjs(startTime).format(`MMM D`);
   const start = dayjs(startTime).format(`HH:mm`);
   const end = dayjs(endTime).format(`HH:mm`);
@@ -19,9 +19,8 @@ export const createTripEventItemTemplate = (item) => {
     result += `${durationM}M`;
     return result;
   };
-  // const firstOption = item.event.offers[0] ? item.event.offers[0][0] : ``;
-  // const firstOptionPrice = firstOption ? item.event.offers[0][1][price] : ``;
-  const isHidden = item.event.offers ? `` : `visually-hidden`;
+
+  const isHidden = event.offers ? `` : `visually-hidden`;
 
   const createOffersListTemplate = (arr) => {
     let fragment = ``;
@@ -41,7 +40,7 @@ export const createTripEventItemTemplate = (item) => {
     return fragment;
   };
 
-  const isFavourite = item.isFavourite ? `event__favorite-btn--active` : ``;
+  const isStar = isFavourite ? `event__favorite-btn--active` : ``;
 
   return `<li class="trip-events__item">
     <div class="event">
@@ -49,7 +48,7 @@ export const createTripEventItemTemplate = (item) => {
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${type} ${destination}</h3>
+      <h3 class="event__title">${type} ${placeName}</h3>
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime="2019-03-18T10:30">${start}</time>
@@ -63,9 +62,9 @@ export const createTripEventItemTemplate = (item) => {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers ${isHidden}">
-        ${createOffersListTemplate(item.event.offers)}
+        ${createOffersListTemplate(event.offers)}
       </ul>
-      <button class="event__favorite-btn ${isFavourite}" type="button">
+      <button class="event__favorite-btn ${isStar}" type="button">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
           <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
