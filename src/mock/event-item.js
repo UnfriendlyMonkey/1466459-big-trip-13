@@ -109,7 +109,7 @@ export const generateEventItem = () => {
   const eventItem = {
     event: {
       type: EVENT_TYPES[eventType].name,
-      offers: new Map(EVENT_TYPES[eventType].offers)
+      offers: EVENT_TYPES[eventType].offers
     },
     destination: {
       name: destinationName,

@@ -18,7 +18,10 @@ export const createTripEventItemTemplate = (item) => {
     }
     result += `${durationM}M`;
     return result;
-  }
+  };
+  const firstOption = item.event.offers[0] ? item.event.offers[0][0] : ``;
+  const firstOptionPrice = firstOption ? item.event.offers[0][1] : ``;
+  const isHidden = firstOption ? `` : `visually-hidden`;
 
   return `<li class="trip-events__item">
     <div class="event">
@@ -39,11 +42,11 @@ export const createTripEventItemTemplate = (item) => {
         &euro;&nbsp;<span class="event__price-value">${price}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
-      <ul class="event__selected-offers">
+      <ul class="event__selected-offers ${isHidden}">
         <li class="event__offer">
-          <span class="event__offer-title">Order Uber</span>
+          <span class="event__offer-title">${firstOption}</span>
           &plus;&euro;&nbsp;
-          <span class="event__offer-price">20</span>
+          <span class="event__offer-price">${firstOptionPrice}</span>
         </li>
       </ul>
       <button class="event__favorite-btn event__favorite-btn--active" type="button">
