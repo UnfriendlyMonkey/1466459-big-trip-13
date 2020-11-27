@@ -2,43 +2,33 @@ import dayjs from "dayjs";
 
 export const createEditPointTemplate = (item) => {
 
-  const {startTime, endTime, price, event, destination} = item;
-  const type = event.type;
+  const {startTime, endTime, price, eventType, eventOffers, destination} = item;
   const placeName = destination.name;
   const start = dayjs(startTime).format(`DD/MM/YY HH:mm`);
   const end = dayjs(endTime).format(`DD/MM/YY HH:mm`);
 
-  const isHidden = event.offers.length > 0 ? `` : `visually-hidden`;
+  const isOffersSectionHidden = eventOffers.length > 0 ? `` : `visually-hidden`;
 
   const createOffersListTemplate = (arr) => {
-    let fragment = ``;
-    if (!arr) {
-      return ``;
-    } else {
-      for (let i = 0; i < arr.length; i++) {
-        const isChecked = arr[i][1].isOrdered ? `checked` : ``;
-        fragment += `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="edit-offer-${i}" type="checkbox" name="edit-offer-${i}" ${isChecked}>
-          <label class="event__offer-label" for="edit-offer-${i}">
-            <span class="event__offer-title">${arr[i][0]}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${arr[i][1].price}</span>
-          </label>
-        </div>`;
-      }
-    }
-    return fragment;
+    return arr.reduce(function (accumulator, currentValue, index) {
+      return accumulator + `<div class="event__offer-selector">
+        <input class="event__offer-checkbox  visually-hidden" id="edit-offer-${index}" type="checkbox" name="edit-offer-${index}" ${currentValue.isOrdered ? `checked` : ``}>
+        <label class="event__offer-label" for="edit-offer-${index}">
+          <span class="event__offer-title">${currentValue.name}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${currentValue.price}</span>
+        </label>
+      </div>`;
+    }, ``);
   };
 
   const renderPhoto = (arr) => {
-    let fragment = ``;
-    for (let i = 0; i < arr.length; i++) {
-      fragment += `<img class="event__photo" src="${arr[i]}" alt="Event photo">`;
-    }
-    return fragment;
+    return arr.reduce((accumulator, currentValue) => {
+      return accumulator + `<img class="event__photo" src="${currentValue}" alt="Event photo">`;
+    }, ``);
   };
 
-  const isPhotos = () => {
+  const insertPhotosBlock = () => {
     let fragment = ``;
     if (destination.photos) {
       fragment = `<div class="event__photos-container">
@@ -56,7 +46,7 @@ export const createEditPointTemplate = (item) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${eventType.toLowerCase()}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -119,7 +109,7 @@ export const createEditPointTemplate = (item) => {
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-            ${type}
+            ${eventType}
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${placeName} list="destination-list-1">
           <datalist id="destination-list-1">
@@ -152,11 +142,11 @@ export const createEditPointTemplate = (item) => {
         </button>
       </header>
       <section class="event__details">
-        <section class="event__section  event__section--offers ${isHidden}">
+        <section class="event__section  event__section--offers ${isOffersSectionHidden}">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-            ${createOffersListTemplate(event.offers)}
+            ${createOffersListTemplate(eventOffers)}
             </div>
           </div>
         </section>
@@ -164,7 +154,7 @@ export const createEditPointTemplate = (item) => {
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${destination.description}</p>
-          ${isPhotos()}
+          ${insertPhotosBlock()}
         </section>
       </section>
     </form>

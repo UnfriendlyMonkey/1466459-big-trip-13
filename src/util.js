@@ -20,12 +20,14 @@ export const getRandomArray = (array, count) => {
 
 export const durationString = (beginning, ending) => {
   const duration = dayjs(ending).diff(dayjs(beginning), `minute`);
-  const durationH = Math.floor(duration / 60);
-  const durationM = duration % 60;
-  let result = ``;
-  if (durationH) {
-    result += `${durationH}H `;
+  const durationDays = Math.floor(duration / 1440);
+  const durationHours = Math.floor((duration - durationDays * 1440) / 60);
+  const durationMinutes = duration % 60;
+  if (durationDays) {
+    return `${durationDays}D ${durationHours}H ${durationMinutes}M`;
   }
-  result += `${durationM}M`;
-  return result;
+  if (durationHours) {
+    return `${durationHours}H ${durationMinutes}M`;
+  }
+  return `${durationMinutes}M`;
 };

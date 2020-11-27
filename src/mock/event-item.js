@@ -1,54 +1,64 @@
 import {getRandomEl, getRandomArray, getRandomInt} from "../util.js";
 import dayjs from "dayjs";
 
-const OPTIONS = {
-  option1: {
+const OPTIONS = [
+  {
+    name: `option1`,
     price: 25,
     isOrdered: Boolean(getRandomInt(0, 2))
   },
-  option2: {
+  {
+    name: `option2`,
     price: 35,
     isOrdered: Boolean(getRandomInt(0, 2))
   },
-  option3: {
+  {
+    name: `option3`,
     price: 90,
     isOrdered: Boolean(getRandomInt(0, 2))
   },
-  option4: {
+  {
+    name: `option4`,
     price: 75,
     isOrdered: Boolean(getRandomInt(0, 2))
   },
-  option5: {
+  {
+    name: `option5`,
     price: 10,
     isOrdered: Boolean(getRandomInt(0, 2))
   },
-  option6: {
+  {
+    name: `option6`,
     price: 20,
     isOrdered: Boolean(getRandomInt(0, 2))
   },
-  option7: {
+  {
+    name: `option7`,
     price: 80,
     isOrdered: Boolean(getRandomInt(0, 2))
   },
-  option8: {
+  {
+    name: `option8`,
     price: 65,
     isOrdered: Boolean(getRandomInt(0, 2))
   },
-  option9: {
+  {
+    name: `option9`,
     price: 40,
     isOrdered: Boolean(getRandomInt(0, 2))
   },
-  option10: {
+  {
+    name: `option10`,
     price: 50,
     isOrdered: Boolean(getRandomInt(0, 2))
   }
-};
+];
 
 const getOffers = () => {
   let offers = [];
   const isOffers = getRandomInt(0, 5);
   if (isOffers) {
-    offers = getRandomArray(Object.entries(OPTIONS), 5);
+    offers = getRandomArray(OPTIONS, 5);
   }
   return offers;
 };
@@ -137,10 +147,8 @@ export const generateEventItem = () => {
   const startTime = getRandomDate(dayjs(), 10000);
 
   const eventItem = {
-    event: {
-      type: EVENT_TYPES[eventType].name,
-      offers: EVENT_TYPES[eventType].offers
-    },
+    eventType: EVENT_TYPES[eventType].name,
+    eventOffers: EVENT_TYPES[eventType].offers,
     destination: {
       name: destinationName,
       description: DESTINATIONS[destinationName],
