@@ -20,7 +20,13 @@ const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 
-render(tripMainElement, createTripInfoTemplate(), `afterbegin`);
+const eventItems = new Array(25).fill().map(generateEventItem);
+
+const eventItemsList = eventItems.slice().sort(function (a, b) {
+  return a.startTime - b.startTime;
+});
+
+render(tripMainElement, createTripInfoTemplate(eventItemsList.slice(0, INITIAL_POINTS_NUMBER)), `afterbegin`);
 render(tripControlsElement, createTripTabsTemplate(), `afterbegin`);
 render(tripControlsElement, createTripFiltersTemplate(), `beforeend`);
 render(tripEventsElement, createListSortTemplate(), `beforeend`);
@@ -30,16 +36,8 @@ const tripListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
 render(tripListElement, createAddPointFormTemplate(), `afterbegin`);
 
-const eventItems = new Array(25).fill().map(generateEventItem);
-
-const eventItemsList = eventItems.slice().sort(function (a, b) {
-  return a.startTime - b.startTime;
-});
-
 render(tripListElement, createEditPointTemplate(eventItemsList[0]), `beforeend`);
 
 for (let i = 1; i < INITIAL_POINTS_NUMBER; i++) {
   render(tripListElement, createTripEventItemTemplate(eventItemsList[i]), `beforeend`);
 }
-
-console.log(eventItemsList);
