@@ -7,7 +7,9 @@ import {createTripEventItemTemplate} from "./view/trip-event-item.js";
 import {createAddPointFormTemplate} from "./view/add-point.js";
 import {createEditPointTemplate} from "./view/edit-point.js";
 
-const INITIAL_POINTS_NO = 3;
+import {generateEventItem} from "./mock/event-item.js";
+
+const INITIAL_POINTS_NUMBER = 5;
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -18,7 +20,13 @@ const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 
-render(tripMainElement, createTripInfoTemplate(), `afterbegin`);
+const eventItems = new Array(25).fill().map(generateEventItem);
+
+const eventItemsList = eventItems.slice().sort(function (a, b) {
+  return a.startTime - b.startTime;
+});
+
+render(tripMainElement, createTripInfoTemplate(eventItemsList.slice(0, INITIAL_POINTS_NUMBER)), `afterbegin`);
 render(tripControlsElement, createTripTabsTemplate(), `afterbegin`);
 render(tripControlsElement, createTripFiltersTemplate(), `beforeend`);
 render(tripEventsElement, createListSortTemplate(), `beforeend`);
@@ -28,8 +36,8 @@ const tripListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
 render(tripListElement, createAddPointFormTemplate(), `afterbegin`);
 
-render(tripListElement, createEditPointTemplate(), `beforeend`);
+render(tripListElement, createEditPointTemplate(eventItemsList[0]), `beforeend`);
 
-for (let i = 0; i < INITIAL_POINTS_NO; i++) {
-  render(tripListElement, createTripEventItemTemplate(), `beforeend`);
+for (let i = 1; i < INITIAL_POINTS_NUMBER; i++) {
+  render(tripListElement, createTripEventItemTemplate(eventItemsList[i]), `beforeend`);
 }
