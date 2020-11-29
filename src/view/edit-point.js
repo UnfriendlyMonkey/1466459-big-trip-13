@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
+import {createElement} from "../util.js";
 
-export const createEditPointTemplate = (item) => {
+const createEditPointFormTemplate = (item) => {
 
   const {startTime, endTime, price, eventType, eventOffers, destination} = item;
   const placeName = destination.name;
@@ -28,7 +29,7 @@ export const createEditPointTemplate = (item) => {
     }, ``);
   };
 
-  const insertPhotosBlock = () => {
+  const getPhotosTemplate = () => {
     let fragment = ``;
     if (destination.photos) {
       fragment = `<div class="event__photos-container">
@@ -154,9 +155,31 @@ export const createEditPointTemplate = (item) => {
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${destination.description}</p>
-          ${insertPhotosBlock()}
+          ${getPhotosTemplate()}
         </section>
       </section>
     </form>
   </li>`;
 };
+
+export default class EditPointForm {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEditPointFormTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

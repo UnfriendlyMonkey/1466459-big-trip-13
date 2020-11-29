@@ -3,15 +3,15 @@ import TripTabs from "./view/trip-tabs.js";
 import TripFilters from "./view/trip-filters.js";
 import ListSort from "./view/list-sort.js";
 import TripEventsList from "./view/trip-event-list.js";
-import {createTripEventItemTemplate} from "./view/trip-event-item.js";
-import {createAddPointFormTemplate} from "./view/add-point.js";
-import {createEditPointTemplate} from "./view/edit-point.js";
+import TripEventItem from "./view/trip-event-item.js";
+import AddPointForm from "./view/add-point.js";
+import EditPoint from "./view/edit-point.js";
 
 import {generateEventItem} from "./mock/event-item.js";
 
-import {renderTemplate, renderElement} from "./util.js";
+import {renderElement} from "./util.js";
 
-const INITIAL_POINTS_NUMBER = 3;
+const INITIAL_POINTS_NUMBER = 5;
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
@@ -33,10 +33,10 @@ renderElement(tripEventsElement, new ListSort().getElement(), `beforeend`);
 const tripListComponent = new TripEventsList();
 renderElement(tripEventsElement, tripListComponent.getElement(), `beforeend`);
 
-renderTemplate(tripListComponent.getElement(), createAddPointFormTemplate(), `afterbegin`);
+renderElement(tripListComponent.getElement(), new AddPointForm().getElement(), `afterbegin`);
 
-renderTemplate(tripListComponent.getElement(), createEditPointTemplate(eventItemsList[0]), `beforeend`);
+renderElement(tripListComponent.getElement(), new EditPoint(eventItemsList[0]).getElement(), `beforeend`);
 
 for (let i = 1; i < INITIAL_POINTS_NUMBER; i++) {
-  renderTemplate(tripListComponent.getElement(), createTripEventItemTemplate(eventItemsList[i]), `beforeend`);
+  renderElement(tripListComponent.getElement(), new TripEventItem(eventItemsList[i]).getElement(), `beforeend`);
 }

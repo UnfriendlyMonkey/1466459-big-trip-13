@@ -1,5 +1,10 @@
 import dayjs from "dayjs";
 
+const MINUTES = {
+  perHour: 60,
+  perDay: 1440
+};
+
 export const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
 };
@@ -20,9 +25,9 @@ export const getRandomArray = (array, count) => {
 
 export const durationString = (beginning, ending) => {
   const duration = dayjs(ending).diff(dayjs(beginning), `minute`);
-  const durationDays = Math.floor(duration / 1440);
-  const durationHours = Math.floor((duration - durationDays * 1440) / 60);
-  const durationMinutes = duration % 60;
+  const durationDays = Math.floor(duration / MINUTES.perDay);
+  const durationHours = Math.floor((duration - durationDays * MINUTES.perDay) / MINUTES.perHour);
+  const durationMinutes = duration % MINUTES.perHour;
   if (durationDays) {
     return `${durationDays}D ${durationHours}H ${durationMinutes}M`;
   }
