@@ -1,8 +1,8 @@
 import {createTripInfoTemplate} from "./view/trip-info.js";
 import TripTabs from "./view/trip-tabs.js";
-import {createTripFiltersTemplate} from "./view/trip-filters.js";
+import TripFilters from "./view/trip-filters.js";
 import ListSort from "./view/list-sort.js";
-import {createTripEventsListTemplate} from "./view/trip-event-list.js";
+import TripEventsList from "./view/trip-event-list.js";
 import {createTripEventItemTemplate} from "./view/trip-event-item.js";
 import {createAddPointFormTemplate} from "./view/add-point.js";
 import {createEditPointTemplate} from "./view/edit-point.js";
@@ -26,20 +26,16 @@ const eventItemsList = eventItems.slice().sort(function (a, b) {
 });
 
 renderTemplate(tripMainElement, createTripInfoTemplate(eventItemsList.slice(0, INITIAL_POINTS_NUMBER)), `afterbegin`);
-// renderTemplate(tripControlsElement, createTripTabsTemplate(), `afterbegin`);
-// tripTabsHeader.classList.remove(`visually-hidden`);
 renderElement(tripTabsHeader, new TripTabs().getElement(), `afterend`);
-renderTemplate(tripControlsElement, createTripFiltersTemplate(), `beforeend`);
-// renderTemplate(tripEventsElement, createListSortTemplate(), `beforeend`);
+renderElement(tripControlsElement, new TripFilters().getElement(), `beforeend`);
 renderElement(tripEventsElement, new ListSort().getElement(), `beforeend`);
-renderTemplate(tripEventsElement, createTripEventsListTemplate(), `beforeend`);
+const tripListComponent = new TripEventsList();
+renderElement(tripEventsElement, tripListComponent.getElement(), `beforeend`);
 
-const tripListElement = tripEventsElement.querySelector(`.trip-events__list`);
+renderTemplate(tripListComponent.getElement(), createAddPointFormTemplate(), `afterbegin`);
 
-renderTemplate(tripListElement, createAddPointFormTemplate(), `afterbegin`);
-
-renderTemplate(tripListElement, createEditPointTemplate(eventItemsList[0]), `beforeend`);
+renderTemplate(tripListComponent.getElement(), createEditPointTemplate(eventItemsList[0]), `beforeend`);
 
 for (let i = 1; i < INITIAL_POINTS_NUMBER; i++) {
-  renderTemplate(tripListElement, createTripEventItemTemplate(eventItemsList[i]), `beforeend`);
+  renderTemplate(tripListComponent.getElement(), createTripEventItemTemplate(eventItemsList[i]), `beforeend`);
 }
