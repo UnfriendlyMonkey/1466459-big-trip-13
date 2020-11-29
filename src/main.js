@@ -1,7 +1,7 @@
 import {createTripInfoTemplate} from "./view/trip-info.js";
-import {createTripTabsTemplate} from "./view/trip-tabs.js";
+import TripTabs from "./view/trip-tabs.js";
 import {createTripFiltersTemplate} from "./view/trip-filters.js";
-import {createListSortTemplate} from "./view/list-sort.js";
+import ListSort from "./view/list-sort.js";
 import {createTripEventsListTemplate} from "./view/trip-event-list.js";
 import {createTripEventItemTemplate} from "./view/trip-event-item.js";
 import {createAddPointFormTemplate} from "./view/add-point.js";
@@ -9,12 +9,13 @@ import {createEditPointTemplate} from "./view/edit-point.js";
 
 import {generateEventItem} from "./mock/event-item.js";
 
-import {renderTemplate} from "./util.js";
+import {renderTemplate, renderElement} from "./util.js";
 
 const INITIAL_POINTS_NUMBER = 5;
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
+const tripTabsHeader = tripControlsElement.querySelectorAll(`h2`)[0];
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 
@@ -25,9 +26,12 @@ const eventItemsList = eventItems.slice().sort(function (a, b) {
 });
 
 renderTemplate(tripMainElement, createTripInfoTemplate(eventItemsList.slice(0, INITIAL_POINTS_NUMBER)), `afterbegin`);
-renderTemplate(tripControlsElement, createTripTabsTemplate(), `afterbegin`);
+// renderTemplate(tripControlsElement, createTripTabsTemplate(), `afterbegin`);
+// tripTabsHeader.classList.remove(`visually-hidden`);
+renderElement(tripTabsHeader, new TripTabs().getElement(), `afterend`);
 renderTemplate(tripControlsElement, createTripFiltersTemplate(), `beforeend`);
-renderTemplate(tripEventsElement, createListSortTemplate(), `beforeend`);
+// renderTemplate(tripEventsElement, createListSortTemplate(), `beforeend`);
+renderElement(tripEventsElement, new ListSort().getElement(), `beforeend`);
 renderTemplate(tripEventsElement, createTripEventsListTemplate(), `beforeend`);
 
 const tripListElement = tripEventsElement.querySelector(`.trip-events__list`);

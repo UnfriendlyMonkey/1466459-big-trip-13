@@ -40,6 +40,8 @@ export const renderElement = (container, element, place) => {
     case `beforeend`:
       container.append(element);
       break;
+    case `afterend`:
+      container.after(element);
   }
 };
 
