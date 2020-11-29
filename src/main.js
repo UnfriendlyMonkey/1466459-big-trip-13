@@ -9,11 +9,9 @@ import {createEditPointTemplate} from "./view/edit-point.js";
 
 import {generateEventItem} from "./mock/event-item.js";
 
-const INITIAL_POINTS_NUMBER = 5;
+import {renderTemplate} from "./util.js";
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
+const INITIAL_POINTS_NUMBER = 5;
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
@@ -26,18 +24,18 @@ const eventItemsList = eventItems.slice().sort(function (a, b) {
   return a.startTime - b.startTime;
 });
 
-render(tripMainElement, createTripInfoTemplate(eventItemsList.slice(0, INITIAL_POINTS_NUMBER)), `afterbegin`);
-render(tripControlsElement, createTripTabsTemplate(), `afterbegin`);
-render(tripControlsElement, createTripFiltersTemplate(), `beforeend`);
-render(tripEventsElement, createListSortTemplate(), `beforeend`);
-render(tripEventsElement, createTripEventsListTemplate(), `beforeend`);
+renderTemplate(tripMainElement, createTripInfoTemplate(eventItemsList.slice(0, INITIAL_POINTS_NUMBER)), `afterbegin`);
+renderTemplate(tripControlsElement, createTripTabsTemplate(), `afterbegin`);
+renderTemplate(tripControlsElement, createTripFiltersTemplate(), `beforeend`);
+renderTemplate(tripEventsElement, createListSortTemplate(), `beforeend`);
+renderTemplate(tripEventsElement, createTripEventsListTemplate(), `beforeend`);
 
 const tripListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
-render(tripListElement, createAddPointFormTemplate(), `afterbegin`);
+renderTemplate(tripListElement, createAddPointFormTemplate(), `afterbegin`);
 
-render(tripListElement, createEditPointTemplate(eventItemsList[0]), `beforeend`);
+renderTemplate(tripListElement, createEditPointTemplate(eventItemsList[0]), `beforeend`);
 
 for (let i = 1; i < INITIAL_POINTS_NUMBER; i++) {
-  render(tripListElement, createTripEventItemTemplate(eventItemsList[i]), `beforeend`);
+  renderTemplate(tripListElement, createTripEventItemTemplate(eventItemsList[i]), `beforeend`);
 }
