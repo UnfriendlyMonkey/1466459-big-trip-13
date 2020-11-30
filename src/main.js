@@ -17,11 +17,19 @@ const renderPoint = (tripListElement, point) => {
   const pointComponent = new TripEventItem(point);
   const pointEditComponent = new EditPoint(point);
 
+  const onEscHideEditForm = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      hideEditForm();
+    }
+  };
+
   const showEditForm = () => {
     tripListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+    document.addEventListener(`keydown`, onEscHideEditForm);
   };
   const hideEditForm = () => {
     tripListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+    document.removeEventListener(`keydown`, onEscHideEditForm);
   };
 
   pointComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
