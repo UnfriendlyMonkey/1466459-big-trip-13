@@ -9,9 +9,31 @@ import EditPoint from "./view/edit-point.js";
 
 import {generateEventItem} from "./mock/event-item.js";
 
-import {renderElement} from "./util.js";
+import {render} from "./util.js";
 
 const INITIAL_POINTS_NUMBER = 5;
+
+const renderPoint = (tripListElement, point) => {
+  const pointComponent = new TripEventItem(point);
+  const pointEditComponent = new EditPoint(point);
+
+  const showEditForm = () => {
+    tripListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+  };
+  const hideEditForm = () => {
+    tripListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+  };
+
+  pointComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+    showEditForm();
+  });
+
+  pointEditComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+    hideEditForm();
+  });
+
+  render(tripListElement, pointComponent.getElement(), `beforeend`);
+};
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
@@ -26,17 +48,17 @@ const eventItemsList = eventItems.slice().sort(function (a, b) {
 });
 const pointsToGetTripInfo = eventItemsList.slice(0, INITIAL_POINTS_NUMBER);
 
-renderElement(tripMainElement, new TripInfo(pointsToGetTripInfo).getElement(), `afterbegin`);
-renderElement(tripTabsHeader, new TripTabs().getElement(), `afterend`);
-renderElement(tripControlsElement, new TripFilters().getElement(), `beforeend`);
-renderElement(tripEventsElement, new ListSort().getElement(), `beforeend`);
+render(tripMainElement, new TripInfo(pointsToGetTripInfo).getElement(), `afterbegin`);
+render(tripTabsHeader, new TripTabs().getElement(), `afterend`);
+render(tripControlsElement, new TripFilters().getElement(), `beforeend`);
+render(tripEventsElement, new ListSort().getElement(), `beforeend`);
 const tripListComponent = new TripEventsList();
-renderElement(tripEventsElement, tripListComponent.getElement(), `beforeend`);
+render(tripEventsElement, tripListComponent.getElement(), `beforeend`);
 
-renderElement(tripListComponent.getElement(), new AddPointForm().getElement(), `afterbegin`);
-
-renderElement(tripListComponent.getElement(), new EditPoint(eventItemsList[0]).getElement(), `beforeend`);
+tripMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, () => {
+  render(tripListComponent.getElement(), new AddPointForm().getElement(), `afterbegin`);
+});
 
 for (let i = 1; i < INITIAL_POINTS_NUMBER; i++) {
-  renderElement(tripListComponent.getElement(), new TripEventItem(eventItemsList[i]).getElement(), `beforeend`);
+  renderPoint(tripListComponent.getElement(), eventItemsList[i]);
 }

@@ -37,7 +37,7 @@ export const durationString = (beginning, ending) => {
   return `${durationMinutes}M`;
 };
 
-export const renderElement = (container, element, place) => {
+export const render = (container, element, place) => {
   switch (place) {
     case `afterbegin`:
       container.prepend(element);
