@@ -11,8 +11,8 @@ const createTripEventItemTemplate = (item) => {
 
   const isOffersListHidden = eventOffers.length > 0 ? `` : `visually-hidden`;
 
-  const createOffersListTemplate = (arr) => {
-    const Ordered = arr.filter(function (offer) {
+  const createOffersListTemplate = (offers) => {
+    const Ordered = offers.filter(function (offer) {
       return offer.isOrdered;
     });
     return Ordered.reduce(function (accumulator, currentValue) {

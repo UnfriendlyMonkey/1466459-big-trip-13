@@ -12,7 +12,7 @@ import {generateEventItem} from "./mock/event-item.js";
 
 import {render} from "./util.js";
 
-const INITIAL_POINTS_NUMBER = 3;
+const INITIAL_POINTS_NUMBER = 5;
 
 const renderPoint = (tripListElement, point) => {
   const pointComponent = new TripEventItem(point);
@@ -72,11 +72,10 @@ tripMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`cli
   render(tripListComponent.getElement(), new AddPointForm().getElement(), `afterbegin`);
 });
 
-if (!eventItemsList || eventItemsList.length < 1 || INITIAL_POINTS_NUMBER < 1) {
-  console.log(`no array`);
+if (pointsToGetTripInfo.length < 1) {
   render(tripListComponent.getElement(), new EmptyListMessage().getElement(), `beforeend`);
 } else {
-  for (let i = 0; i < INITIAL_POINTS_NUMBER; i++) {
-    renderPoint(tripListComponent.getElement(), eventItemsList[i]);
-  }
+  pointsToGetTripInfo.forEach((point) => {
+    renderPoint(tripListComponent.getElement(), point);
+  });
 }

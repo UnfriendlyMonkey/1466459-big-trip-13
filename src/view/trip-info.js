@@ -1,21 +1,18 @@
 import dayjs from "dayjs";
 import {createElement} from "../util.js";
 
-const createTripInfoTemplate = (arr) => {
+const createTripInfoSectionTemplate = (points) => {
   let fromDate = `...`;
   let toDate = `...`;
   let totalPrice = `...`;
   let renderRoute = `...`;
-  if (arr && arr.length > 0) {
-    fromDate = dayjs(arr[0].startTime).format(`D MMM`);
-    toDate = dayjs(arr[arr.length - 1].endTime).format(`D MMM`);
-    const destinations = [];
-    for (let i = 0; i < arr.length; i++) {
-      destinations.push(arr[i].destination.name);
-    }
+  if (points && points.length > 0) {
+    fromDate = dayjs(points[0].startTime).format(`D MMM`);
+    toDate = dayjs(points[points.length - 1].endTime).format(`D MMM`);
+    const destinations = points.map((point) => point.destination.name);
     const uniquePoints = new Set(destinations);
-    uniquePoints.delete(arr[0].destination.name);
-    uniquePoints.delete(arr[arr.length - 1].destination.name);
+    uniquePoints.delete(points[0].destination.name);
+    uniquePoints.delete(points[points.length - 1].destination.name);
     const renderMiddlePoint = () => {
       switch (uniquePoints.size) {
         case 0:
@@ -26,7 +23,7 @@ const createTripInfoTemplate = (arr) => {
           return `...  &mdash; `;
       }
     };
-    renderRoute = `${arr[0].destination.name} &mdash; ${renderMiddlePoint()}${arr[arr.length - 1].destination.name}`;
+    renderRoute = `${points[0].destination.name} &mdash; ${renderMiddlePoint()}${points[points.length - 1].destination.name}`;
 
     const offersPrice = (item) => {
       const ordered = item.eventOffers.filter(function (offer) {
@@ -38,7 +35,7 @@ const createTripInfoTemplate = (arr) => {
         }, 0);
     };
 
-    totalPrice = arr.reduce((accumulator, currentValue) => {
+    totalPrice = points.reduce((accumulator, currentValue) => {
       return accumulator + (currentValue.price + offersPrice(currentValue));
     }, 0);
   }
@@ -63,7 +60,7 @@ export default class TripInfo {
   }
 
   getTemplate() {
-    return createTripInfoTemplate(this._points);
+    return createTripInfoSectionTemplate(this._points);
   }
 
   getElement() {

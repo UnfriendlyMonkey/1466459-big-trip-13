@@ -10,8 +10,8 @@ const createEditPointFormTemplate = (item) => {
 
   const isOffersSectionHidden = eventOffers.length > 0 ? `` : `visually-hidden`;
 
-  const createOffersListTemplate = (arr) => {
-    return arr.reduce(function (accumulator, currentValue, index) {
+  const createOffersListTemplate = (offers) => {
+    return offers.reduce(function (accumulator, currentValue, index) {
       return accumulator + `<div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" id="edit-offer-${index}" type="checkbox" name="edit-offer-${index}" ${currentValue.isOrdered ? `checked` : ``}>
         <label class="event__offer-label" for="edit-offer-${index}">
@@ -23,8 +23,8 @@ const createEditPointFormTemplate = (item) => {
     }, ``);
   };
 
-  const renderPhoto = (arr) => {
-    return arr.reduce((accumulator, currentValue) => {
+  const renderPhoto = (photos) => {
+    return photos.reduce((accumulator, currentValue) => {
       return accumulator + `<img class="event__photo" src="${currentValue}" alt="Event photo">`;
     }, ``);
   };
