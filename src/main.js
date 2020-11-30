@@ -32,6 +32,10 @@ const renderPoint = (tripListElement, point) => {
     hideEditForm();
   });
 
+  pointEditComponent.getElement().querySelector(`.event--edit`).addEventListener(`submit`, () => {
+    hideEditForm();
+  });
+
   render(tripListElement, pointComponent.getElement(), `beforeend`);
 };
 
