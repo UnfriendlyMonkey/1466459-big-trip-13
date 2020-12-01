@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
+import {createElement} from "../util.js";
 
-export const createEditPointTemplate = (item) => {
+const createEditPointFormTemplate = (item) => {
 
   const {startTime, endTime, price, eventType, eventOffers, destination} = item;
   const placeName = destination.name;
@@ -9,8 +10,8 @@ export const createEditPointTemplate = (item) => {
 
   const isOffersSectionHidden = eventOffers.length > 0 ? `` : `visually-hidden`;
 
-  const createOffersListTemplate = (arr) => {
-    return arr.reduce(function (accumulator, currentValue, index) {
+  const createOffersListTemplate = (offers) => {
+    return offers.reduce(function (accumulator, currentValue, index) {
       return accumulator + `<div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" id="edit-offer-${index}" type="checkbox" name="edit-offer-${index}" ${currentValue.isOrdered ? `checked` : ``}>
         <label class="event__offer-label" for="edit-offer-${index}">
@@ -22,13 +23,13 @@ export const createEditPointTemplate = (item) => {
     }, ``);
   };
 
-  const renderPhoto = (arr) => {
-    return arr.reduce((accumulator, currentValue) => {
+  const renderPhoto = (photos) => {
+    return photos.reduce((accumulator, currentValue) => {
       return accumulator + `<img class="event__photo" src="${currentValue}" alt="Event photo">`;
     }, ``);
   };
 
-  const insertPhotosBlock = () => {
+  const getPhotosTemplate = () => {
     let fragment = ``;
     if (destination.photos) {
       fragment = `<div class="event__photos-container">
@@ -154,9 +155,31 @@ export const createEditPointTemplate = (item) => {
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${destination.description}</p>
-          ${insertPhotosBlock()}
+          ${getPhotosTemplate()}
         </section>
       </section>
     </form>
   </li>`;
 };
+
+export default class EditPointForm {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEditPointFormTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

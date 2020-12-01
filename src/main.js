@@ -1,22 +1,56 @@
-import {createTripInfoTemplate} from "./view/trip-info.js";
-import {createTripTabsTemplate} from "./view/trip-tabs.js";
-import {createTripFiltersTemplate} from "./view/trip-filters.js";
-import {createListSortTemplate} from "./view/list-sort.js";
-import {createTripEventsListTemplate} from "./view/trip-event-list.js";
-import {createTripEventItemTemplate} from "./view/trip-event-item.js";
-import {createAddPointFormTemplate} from "./view/add-point.js";
-import {createEditPointTemplate} from "./view/edit-point.js";
+import TripInfo from "./view/trip-info.js";
+import TripTabs from "./view/trip-tabs.js";
+import TripFilters from "./view/trip-filters.js";
+import ListSort from "./view/list-sort.js";
+import TripEventsList from "./view/trip-event-list.js";
+import TripEventItem from "./view/trip-event-item.js";
+import AddPointForm from "./view/add-point.js";
+import EditPoint from "./view/edit-point.js";
+import EmptyListMessage from "./view/empty-list.js";
 
 import {generateEventItem} from "./mock/event-item.js";
 
+import {render} from "./util.js";
+
 const INITIAL_POINTS_NUMBER = 5;
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
+const renderPoint = (tripListElement, point) => {
+  const pointComponent = new TripEventItem(point);
+  const pointEditComponent = new EditPoint(point);
+
+  const onEscHideEditForm = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      hideEditForm();
+    }
+  };
+
+  const showEditForm = () => {
+    tripListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+    document.addEventListener(`keydown`, onEscHideEditForm);
+  };
+  const hideEditForm = () => {
+    tripListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+    document.removeEventListener(`keydown`, onEscHideEditForm);
+  };
+
+  pointComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+    showEditForm();
+  });
+
+  pointEditComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+    hideEditForm();
+  });
+
+  pointEditComponent.getElement().querySelector(`.event--edit`).addEventListener(`submit`, () => {
+    hideEditForm();
+  });
+
+  render(tripListElement, pointComponent.getElement(), `beforeend`);
 };
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
+const tripTabsHeader = tripControlsElement.querySelectorAll(`h2`)[0];
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 
@@ -25,19 +59,23 @@ const eventItems = new Array(25).fill().map(generateEventItem);
 const eventItemsList = eventItems.slice().sort(function (a, b) {
   return a.startTime - b.startTime;
 });
+const pointsToGetTripInfo = eventItemsList.slice(0, INITIAL_POINTS_NUMBER);
 
-render(tripMainElement, createTripInfoTemplate(eventItemsList.slice(0, INITIAL_POINTS_NUMBER)), `afterbegin`);
-render(tripControlsElement, createTripTabsTemplate(), `afterbegin`);
-render(tripControlsElement, createTripFiltersTemplate(), `beforeend`);
-render(tripEventsElement, createListSortTemplate(), `beforeend`);
-render(tripEventsElement, createTripEventsListTemplate(), `beforeend`);
+render(tripMainElement, new TripInfo(pointsToGetTripInfo).getElement(), `afterbegin`);
+render(tripTabsHeader, new TripTabs().getElement(), `afterend`);
+render(tripControlsElement, new TripFilters().getElement(), `beforeend`);
+render(tripEventsElement, new ListSort().getElement(), `beforeend`);
+const tripListComponent = new TripEventsList();
+render(tripEventsElement, tripListComponent.getElement(), `beforeend`);
 
-const tripListElement = tripEventsElement.querySelector(`.trip-events__list`);
+tripMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, () => {
+  render(tripListComponent.getElement(), new AddPointForm().getElement(), `afterbegin`);
+});
 
-render(tripListElement, createAddPointFormTemplate(), `afterbegin`);
-
-render(tripListElement, createEditPointTemplate(eventItemsList[0]), `beforeend`);
-
-for (let i = 1; i < INITIAL_POINTS_NUMBER; i++) {
-  render(tripListElement, createTripEventItemTemplate(eventItemsList[i]), `beforeend`);
+if (pointsToGetTripInfo.length < 1) {
+  render(tripListComponent.getElement(), new EmptyListMessage().getElement(), `beforeend`);
+} else {
+  pointsToGetTripInfo.forEach((point) => {
+    renderPoint(tripListComponent.getElement(), point);
+  });
 }

@@ -1,4 +1,6 @@
-export const createAddPointFormTemplate = () => {
+import {createElement} from "../util.js";
+
+const createAddPointFormTemplate = () => {
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
@@ -167,3 +169,24 @@ export const createAddPointFormTemplate = () => {
     </form>
   </li>`;
 };
+
+export default class AddPointForm {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createAddPointFormTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
