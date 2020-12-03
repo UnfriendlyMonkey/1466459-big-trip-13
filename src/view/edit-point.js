@@ -1,5 +1,5 @@
+import AbstractView from "./abstract.js";
 import dayjs from "dayjs";
-import {createElement} from "../util.js";
 
 const createEditPointFormTemplate = (item) => {
 
@@ -162,24 +162,13 @@ const createEditPointFormTemplate = (item) => {
   </li>`;
 };
 
-export default class EditPointForm {
+export default class EditPointForm extends AbstractView {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
   }
 
   getTemplate() {
     return createEditPointFormTemplate(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

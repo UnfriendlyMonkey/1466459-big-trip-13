@@ -1,5 +1,6 @@
+import AbstractView from "./abstract.js";
 import dayjs from "dayjs";
-import {durationString, createElement} from "../util.js";
+import {durationString} from "../util.js";
 
 const createTripEventItemTemplate = (item) => {
 
@@ -59,24 +60,13 @@ const createTripEventItemTemplate = (item) => {
   </li>`;
 };
 
-export default class TripEventItem {
+export default class TripEventItem extends AbstractView {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripEventItemTemplate(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
