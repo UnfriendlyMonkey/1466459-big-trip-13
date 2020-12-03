@@ -1,4 +1,4 @@
-import {getRandomEl, getRandomArray, getRandomInt} from "../util.js";
+import {getRandomEl, getRandomArray, getRandomInt} from "../utils/common.js";
 import dayjs from "dayjs";
 
 const OPTIONS = [

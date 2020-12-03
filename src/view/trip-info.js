@@ -1,5 +1,5 @@
+import AbstractView from "./abstract.js";
 import dayjs from "dayjs";
-import {createElement} from "../util.js";
 
 const createTripInfoSectionTemplate = (points) => {
   let fromDate = `...`;
@@ -53,24 +53,13 @@ const createTripInfoSectionTemplate = (points) => {
   </section>`;
 };
 
-export default class TripInfo {
+export default class TripInfo extends AbstractView {
   constructor(points) {
+    super();
     this._points = points;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripInfoSectionTemplate(this._points);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

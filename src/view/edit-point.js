@@ -1,5 +1,5 @@
+import AbstractView from "./abstract.js";
 import dayjs from "dayjs";
-import {createElement} from "../util.js";
 
 const createEditPointFormTemplate = (item) => {
 
@@ -162,24 +162,36 @@ const createEditPointFormTemplate = (item) => {
   </li>`;
 };
 
-export default class EditPointForm {
+export default class EditPointForm extends AbstractView {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
+
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formCloseHandler = this._formCloseHandler.bind(this);
   }
 
   getTemplate() {
     return createEditPointFormTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  _formCloseHandler(evt) {
+    evt.preventDefault();
+    this._callback.formClose();
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector(`.event--edit`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  setFormCloseHandler(anotherCallback) {
+    this._callback.formClose = anotherCallback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._formCloseHandler);
   }
 }
