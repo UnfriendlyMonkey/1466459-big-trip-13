@@ -33,17 +33,14 @@ const renderPoint = (tripListElement, point) => {
     document.removeEventListener(`keydown`, onEscHideEditForm);
   };
 
-  pointComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
-    showEditForm();
-  });
+  pointComponent.setEditClickHandler(() => showEditForm());
 
   pointEditComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
     hideEditForm();
   });
 
-  pointEditComponent.getElement().querySelector(`.event--edit`).addEventListener(`submit`, () => {
-    hideEditForm();
-  });
+  pointEditComponent.setFormSubmitHandler(() => hideEditForm());
+  pointEditComponent.setFormCloseHandler(() => hideEditForm());
 
   render(tripListElement, pointComponent.getElement(), `beforeend`);
 };
