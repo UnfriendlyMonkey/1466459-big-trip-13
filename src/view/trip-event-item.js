@@ -1,6 +1,6 @@
 import AbstractView from "./abstract.js";
 import dayjs from "dayjs";
-import {durationString} from "../util.js";
+import {durationString} from "../utils/common.js";
 
 const createTripEventItemTemplate = (item) => {
 
