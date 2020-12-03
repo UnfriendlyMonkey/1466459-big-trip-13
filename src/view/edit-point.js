@@ -190,8 +190,8 @@ export default class EditPointForm extends AbstractView {
     this.getElement().querySelector(`.event--edit`).addEventListener(`submit`, this._formSubmitHandler);
   }
 
-  setFormCloseHandler(callback) {
-    this._callback.formClose = callback;
+  setFormCloseHandler(anotherCallback) {
+    this._callback.formClose = anotherCallback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._formCloseHandler);
   }
 }

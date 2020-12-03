@@ -35,10 +35,6 @@ const renderPoint = (tripListElement, point) => {
 
   pointComponent.setEditClickHandler(() => showEditForm());
 
-  pointEditComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
-    hideEditForm();
-  });
-
   pointEditComponent.setFormSubmitHandler(() => hideEditForm());
   pointEditComponent.setFormCloseHandler(() => hideEditForm());
 
