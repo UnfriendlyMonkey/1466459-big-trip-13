@@ -24,7 +24,12 @@ export default class TripList {
 
   init(tripPoints) {
     this._tripPoints = tripPoints.slice();
-    render(this._listContainer, this._tripListComponent, `beforeend`);
+    if (this._tripPoints.length < 1) {
+      this._renderEmptyList();
+      return;
+    }
+
+    this._renderListSort();
     this._renderList();
   }
 
@@ -53,12 +58,7 @@ export default class TripList {
   }
 
   _renderList() {
-    if (this._tripPoints.length < 1) {
-      this._renderEmptyList();
-      return;
-    }
-
-    this._renderListSort();
+    render(this._listContainer, this._tripListComponent, `beforeend`);
     this._renderPoints();
   }
 
