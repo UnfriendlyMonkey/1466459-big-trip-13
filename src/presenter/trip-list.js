@@ -1,4 +1,5 @@
 import {render} from "../utils/render.js";
+import {updateItem} from "../utils/common.js";
 
 import ListSort from "../view/list-sort.js";
 import EmptyListMessage from "../view/empty-list.js";
@@ -10,6 +11,7 @@ import PointPresenter from "../presenter/point.js";
 export default class TripList {
   constructor(listContainer) {
     this._listContainer = listContainer;
+    this._pointPresenter = {};
 
     this._tripListComponent = new TripEventsList();
     this._emptyListMessage = new EmptyListMessage();
@@ -17,6 +19,7 @@ export default class TripList {
     this._listSort = new ListSort();
 
     this._eventAddButtonHandler = this._eventAddButtonHandler.bind(this);
+    this._pointChangeHandler = this._pointChangeHandler.bind(this);
   }
 
   init(tripPoints) {
@@ -37,11 +40,15 @@ export default class TripList {
     render(this._tripListComponent, this._addPointForm, `afterbegin`);
   }
 
+  _renderPoint(point) {
+    const pointPresenter = new PointPresenter(this._tripListComponent, this._pointChangeHandler);
+    pointPresenter.init(point);
+    this._pointPresenter[point.id] = pointPresenter;
+  }
+
   _renderPoints() {
     this._tripPoints.forEach((point) => {
-      // this._renderPoint(this._tripListComponent, point);
-      const pointPresenter = new PointPresenter(this._tripListComponent);
-      pointPresenter.init(point);
+      this._renderPoint(point);
     });
   }
 
@@ -57,7 +64,11 @@ export default class TripList {
 
   _eventAddButtonHandler(evt) {
     evt.preventDefault();
-    // render(this._tripListComponent, this._addPointForm, `afterbegin`);
     this._renderAddPointForm();
+  }
+
+  _pointChangeHandler(changedPoint) {
+    this._tripPoints = updateItem(this._tripPoints, changedPoint);
+    this._pointPresenter[changedPoint.id].init(changedPoint);
   }
 }

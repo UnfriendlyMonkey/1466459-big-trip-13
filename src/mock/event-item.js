@@ -1,6 +1,8 @@
 import {getRandomEl, getRandomArray, getRandomInt} from "../utils/common.js";
 import dayjs from "dayjs";
 
+const generateId = () => Date.now() % 1000000 + parseInt(Math.random() * 10000, 10);
+
 const OPTIONS = [
   {
     name: `option1`,
@@ -147,6 +149,7 @@ export const generateEventItem = () => {
   const startTime = getRandomDate(dayjs(), 10000);
 
   const eventItem = {
+    id: generateId(),
     eventType: EVENT_TYPES[eventType].name,
     eventOffers: EVENT_TYPES[eventType].offers,
     destination: {
