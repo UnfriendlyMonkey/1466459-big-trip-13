@@ -3,13 +3,20 @@ import EditPoint from "../view/edit-point.js";
 
 import {render, replace, remove} from "../utils/render.js";
 
+const Mode = {
+  DEFAULT: `DEFAULT`,
+  EDITING: `EDITING`
+};
+
 export default class PointPresenter {
-  constructor(listComponent, changeData) {
+  constructor(listComponent, changeData, changeMode) {
     this._listComponent = listComponent;
     this._changeData = changeData;
+    this._changeMode = changeMode;
 
     this._pointComponent = null;
     this._pointEditComponent = null;
+    this._mode = Mode.DEFAULT;
 
     this._showEditForm = this._showEditForm.bind(this);
     this._hideEditForm = this._hideEditForm.bind(this);
@@ -39,15 +46,21 @@ export default class PointPresenter {
       return;
     }
 
-    if (this._listComponent.getElement().contains(prevPointComponent.getElement())) {
+    if (this._mode === Mode.DEFAULT) {
       replace(this._pointComponent, prevPointComponent);
     }
-    if (this._listComponent.getElement().contains(prevPointEditComponent.getElement())) {
+    if (this._mode === Mode.EDITING) {
       replace(this._pointEditComponent, prevPointEditComponent);
     }
 
     remove(prevPointComponent);
     remove(prevPointEditComponent);
+  }
+
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._hideEditForm();
+    }
   }
 
   destroy() {
@@ -73,11 +86,14 @@ export default class PointPresenter {
   _showEditForm() {
     replace(this._pointEditComponent, this._pointComponent);
     document.addEventListener(`keydown`, this._onEscHideEditForm);
+    this._changeMode();
+    this._mode = Mode.EDITING;
   }
 
   _hideEditForm() {
     replace(this._pointComponent, this._pointEditComponent);
     document.removeEventListener(`keydown`, this._onEscHideEditForm);
+    this._mode = Mode.DEFAULT;
   }
 
   _handleFavouriteClick() {

@@ -20,6 +20,7 @@ export default class TripList {
 
     this._eventAddButtonHandler = this._eventAddButtonHandler.bind(this);
     this._pointChangeHandler = this._pointChangeHandler.bind(this);
+    this._modeChangeHandler = this._modeChangeHandler.bind(this);
   }
 
   init(tripPoints) {
@@ -46,7 +47,7 @@ export default class TripList {
   }
 
   _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._tripListComponent, this._pointChangeHandler);
+    const pointPresenter = new PointPresenter(this._tripListComponent, this._pointChangeHandler, this._modeChangeHandler);
     pointPresenter.init(point);
     this._pointPresenter[point.id] = pointPresenter;
   }
@@ -70,5 +71,9 @@ export default class TripList {
   _pointChangeHandler(changedPoint) {
     this._tripPoints = updateItem(this._tripPoints, changedPoint);
     this._pointPresenter[changedPoint.id].init(changedPoint);
+  }
+
+  _modeChangeHandler() {
+    Object.values(this._pointPresenter).forEach((presenter) => presenter.resetView());
   }
 }
