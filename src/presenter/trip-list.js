@@ -1,11 +1,11 @@
-import {render, replace} from "../utils/render.js";
-import TripEventItem from "../view/trip-event-item.js";
-import EditPoint from "../view/edit-point.js";
+import {render} from "../utils/render.js";
+
 import ListSort from "../view/list-sort.js";
 import EmptyListMessage from "../view/empty-list.js";
 import AddPointForm from "../view/add-point.js";
 import TripEventsList from "../view/trip-event-list.js";
 
+import PointPresenter from "../presenter/point.js";
 
 export default class TripList {
   constructor(listContainer) {
@@ -25,33 +25,6 @@ export default class TripList {
     this._renderList();
   }
 
-  _renderPoint(tripListElement, point) {
-    const pointComponent = new TripEventItem(point);
-    const pointEditComponent = new EditPoint(point);
-
-    const onEscHideEditForm = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        hideEditForm();
-      }
-    };
-
-    const showEditForm = () => {
-      replace(pointEditComponent, pointComponent);
-      document.addEventListener(`keydown`, onEscHideEditForm);
-    };
-    const hideEditForm = () => {
-      replace(pointComponent, pointEditComponent);
-      document.removeEventListener(`keydown`, onEscHideEditForm);
-    };
-
-    pointComponent.setEditClickHandler(() => showEditForm());
-
-    pointEditComponent.setFormSubmitHandler(() => hideEditForm());
-    pointEditComponent.setFormCloseHandler(() => hideEditForm());
-
-    render(tripListElement, pointComponent, `beforeend`);
-  }
-
   _renderEmptyList() {
     render(this._listContainer, this._emptyListMessage, `beforeend`);
   }
@@ -66,7 +39,9 @@ export default class TripList {
 
   _renderPoints() {
     this._tripPoints.forEach((point) => {
-      this._renderPoint(this._tripListComponent, point);
+      // this._renderPoint(this._tripListComponent, point);
+      const pointPresenter = new PointPresenter(this._tripListComponent);
+      pointPresenter.init(point);
     });
   }
 
