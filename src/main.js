@@ -5,6 +5,7 @@ import TripFilters from "./view/trip-filters.js";
 import {generateEventItem} from "./mock/event-item.js";
 
 import {render} from "./utils/render.js";
+import {sortDate} from "./utils/list.js";
 
 import TripListPresenter from "./presenter/trip-list";
 
@@ -18,9 +19,7 @@ const tripEventsElement = document.querySelector(`.trip-events`);
 
 const eventItems = new Array(25).fill().map(generateEventItem);
 
-const eventItemsList = eventItems.slice().sort(function (a, b) {
-  return a.startTime - b.startTime;
-});
+const eventItemsList = eventItems.slice().sort(sortDate);
 const pointsToGetTripInfo = eventItemsList.slice(0, INITIAL_POINTS_NUMBER);
 
 render(tripMainElement, new TripInfo(pointsToGetTripInfo), `afterbegin`);
