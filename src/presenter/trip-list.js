@@ -1,6 +1,7 @@
 import {render} from "../utils/render.js";
 import {updateItem} from "../utils/common.js";
-import {sortDate, sortDuration, sortPrice} from "../utils/list.js";
+import {sortByDate, sortByDuration, sortByPrice} from "../utils/list.js";
+import {SortType} from "../utils/const.js";
 
 import ListSort from "../view/list-sort.js";
 import EmptyListMessage from "../view/empty-list.js";
@@ -13,7 +14,7 @@ export default class TripList {
   constructor(listContainer) {
     this._listContainer = listContainer;
     this._pointPresenter = {};
-    this._currentSortType = `sort-day`;
+    this._currentSortType = SortType.DAY;
 
     this._tripListComponent = new TripEventsList();
     this._emptyListMessage = new EmptyListMessage();
@@ -43,14 +44,14 @@ export default class TripList {
 
   _sortList(sortType) {
     switch (sortType) {
-      case `sort-price`:
-        this._tripPoints.sort(sortPrice);
+      case SortType.PRICE:
+        this._tripPoints.sort(sortByPrice);
         break;
-      case `sort-time`:
-        this._tripPoints.sort(sortDuration);
+      case SortType.DURATION:
+        this._tripPoints.sort(sortByDuration);
         break;
       default:
-        this._tripPoints.sort(sortDate);
+        this._tripPoints.sort(sortByDate);
     }
     this._currentSortType = sortType;
   }
