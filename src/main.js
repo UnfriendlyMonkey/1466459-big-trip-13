@@ -5,10 +5,10 @@ import TripFilters from "./view/trip-filters.js";
 import {generateEventItem} from "./mock/event-item.js";
 
 import {render} from "./utils/render.js";
+import {sortByDate} from "./utils/list.js";
+import {INITIAL_POINTS_NUMBER} from "./utils/const.js";
 
 import TripListPresenter from "./presenter/trip-list";
-
-const INITIAL_POINTS_NUMBER = 5;
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
@@ -18,9 +18,7 @@ const tripEventsElement = document.querySelector(`.trip-events`);
 
 const eventItems = new Array(25).fill().map(generateEventItem);
 
-const eventItemsList = eventItems.slice().sort(function (a, b) {
-  return a.startTime - b.startTime;
-});
+const eventItemsList = eventItems.slice().sort(sortByDate);
 const pointsToGetTripInfo = eventItemsList.slice(0, INITIAL_POINTS_NUMBER);
 
 render(tripMainElement, new TripInfo(pointsToGetTripInfo), `afterbegin`);

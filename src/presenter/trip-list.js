@@ -1,5 +1,7 @@
 import {render} from "../utils/render.js";
 import {updateItem} from "../utils/common.js";
+import {sortByDate, sortByDuration, sortByPrice} from "../utils/list.js";
+import {SortType} from "../utils/const.js";
 
 import ListSort from "../view/list-sort.js";
 import EmptyListMessage from "../view/empty-list.js";
@@ -12,6 +14,7 @@ export default class TripList {
   constructor(listContainer) {
     this._listContainer = listContainer;
     this._pointPresenter = {};
+    this._currentSortType = SortType.DAY;
 
     this._tripListComponent = new TripEventsList();
     this._emptyListMessage = new EmptyListMessage();
@@ -21,6 +24,7 @@ export default class TripList {
     this._eventAddButtonHandler = this._eventAddButtonHandler.bind(this);
     this._pointChangeHandler = this._pointChangeHandler.bind(this);
     this._modeChangeHandler = this._modeChangeHandler.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(tripPoints) {
@@ -38,8 +42,33 @@ export default class TripList {
     render(this._listContainer, this._emptyListMessage, `beforeend`);
   }
 
+  _sortList(sortType) {
+    switch (sortType) {
+      case SortType.PRICE:
+        this._tripPoints.sort(sortByPrice);
+        break;
+      case SortType.DURATION:
+        this._tripPoints.sort(sortByDuration);
+        break;
+      default:
+        this._tripPoints.sort(sortByDate);
+    }
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortList(sortType);
+    this._clearList();
+    this._renderPoints();
+  }
+
   _renderListSort() {
     render(this._listContainer, this._listSort, `beforeend`);
+    this._listSort.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderAddPointForm() {
@@ -61,6 +90,11 @@ export default class TripList {
   _renderList() {
     render(this._listContainer, this._tripListComponent, `beforeend`);
     this._renderPoints();
+  }
+
+  _clearList() {
+    Object.values(this._pointPresenter).forEach((presenter) => presenter.destroy());
+    this._pointPresenter = {};
   }
 
   _eventAddButtonHandler(evt) {
