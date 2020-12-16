@@ -169,10 +169,53 @@ export default class EditPointForm extends AbstractView {
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
+
+    this._offerOrderedToggleHandler = this._offerOrderedToggleHandler.bind(this);
+
+    this.getElement()
+      .querySelector(`.event__available-offers`)
+      .addEventListener(`click`, this._offerOrderedToggleHandler);
   }
 
   getTemplate() {
     return createEditPointFormTemplate(this._point);
+  }
+
+  updateData(update) {
+    if (!update) {
+      return;
+    }
+
+    this._point = Object.assign(
+        {},
+        this._point,
+        update
+    );
+
+    this.updateElement();
+  }
+
+  updateElement() {
+    let prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, prevElement);
+  }
+
+  _offerOrderedToggleHandler(evt) {
+    evt.preventDefault();
+    if (!evt.target.closest(`.event__offer-label`)) {
+      return;
+    }
+    const label = evt.target.closest(`.event__offer-label`);
+    const index = Number.parseInt(label.htmlFor.slice(11), 10);
+    const orderToChange = this._point.eventOffers[index];
+    this.updateData(
+        Object.assign({}, orderToChange, orderToChange.isOrdered = !orderToChange.isOrdered)
+    );
   }
 
   _formSubmitHandler(evt) {
