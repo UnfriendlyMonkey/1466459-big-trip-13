@@ -1,4 +1,4 @@
-import AbstractView from "./abstract.js";
+import Smart from "./smart.js";
 import dayjs from "dayjs";
 
 const createEditPointFormTemplate = (item) => {
@@ -162,7 +162,7 @@ const createEditPointFormTemplate = (item) => {
   </li>`;
 };
 
-export default class EditPointForm extends AbstractView {
+export default class EditPointForm extends Smart {
   constructor(point) {
     super();
     // this._data = point;
@@ -179,36 +179,6 @@ export default class EditPointForm extends AbstractView {
 
   getTemplate() {
     return createEditPointFormTemplate(this._data);
-  }
-
-  updateData(update, justDataUpdating) {
-    if (!update) {
-      return;
-    }
-
-    this._data = Object.assign(
-        {},
-        this._data,
-        update
-    );
-
-    if (justDataUpdating) {
-      return;
-    }
-
-    this.updateElement();
-  }
-
-  updateElement() {
-    let prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-
-    this.restoreHandlers();
   }
 
   restoreHandlers() {
@@ -234,8 +204,9 @@ export default class EditPointForm extends AbstractView {
     const label = evt.target.closest(`.event__offer-label`);
     const index = Number.parseInt(label.htmlFor.slice(11), 10);
     const orderToChange = this._data.eventOffers[index];
+    Object.assign({}, orderToChange, orderToChange.isOrdered = !orderToChange.isOrdered);
     this.updateData(
-        Object.assign({}, orderToChange, orderToChange.isOrdered = !orderToChange.isOrdered)
+        this._data.eventOffers
     );
   }
 
