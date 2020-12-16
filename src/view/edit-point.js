@@ -258,6 +258,9 @@ export default class EditPointForm extends Smart {
 
   _destinationInputHandler(evt) {
     const newDestination = evt.target.value;
+    if (DESTINATIONS[newDestination] === undefined) {
+      return;
+    }
     Object.assign(
         {},
         this._data.destination,
