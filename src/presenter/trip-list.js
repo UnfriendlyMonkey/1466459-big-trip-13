@@ -9,6 +9,7 @@ import AddPointForm from "../view/add-point.js";
 import TripEventsList from "../view/trip-event-list.js";
 
 import PointPresenter from "../presenter/point.js";
+import EditPointForm from "../view/edit-point.js";
 
 export default class TripList {
   constructor(listContainer) {
@@ -18,7 +19,8 @@ export default class TripList {
 
     this._tripListComponent = new TripEventsList();
     this._emptyListMessage = new EmptyListMessage();
-    this._addPointForm = new AddPointForm();
+    // this._addPointForm = new AddPointForm();
+    this._addPointForm = new EditPointForm();
     this._listSort = new ListSort();
 
     this._eventAddButtonHandler = this._eventAddButtonHandler.bind(this);

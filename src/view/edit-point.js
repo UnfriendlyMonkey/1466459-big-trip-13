@@ -2,6 +2,21 @@ import Smart from "./smart.js";
 import dayjs from "dayjs";
 import {DESTINATIONS, EVENT_TYPES} from "../mock/event-item.js";
 
+const BLANK_POINT = {
+  id: null,
+  eventType: `Transport`,
+  eventOffers: [],
+  destination: {
+    name: `Destination`,
+    description: ``,
+    photos: []
+  },
+  startTime: dayjs(),
+  endTime: dayjs(),
+  price: 0,
+  isFavourite: false
+};
+
 const createEditPointFormTemplate = (item) => {
 
   const {startTime, endTime, price, eventType, eventOffers, destination} = item;
@@ -164,7 +179,7 @@ const createEditPointFormTemplate = (item) => {
 };
 
 export default class EditPointForm extends Smart {
-  constructor(point) {
+  constructor(point = BLANK_POINT) {
     super();
     // this._data = point;
     this._data = EditPointForm.parsePointToData(point);
