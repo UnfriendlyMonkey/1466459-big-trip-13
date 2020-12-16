@@ -177,6 +177,12 @@ export default class EditPointForm extends Smart {
     this._setInnerHandlers();
   }
 
+  reset(point) {
+    this.updateData(
+        EditPointForm.parsePointToData(point)
+    );
+  }
+
   getTemplate() {
     return createEditPointFormTemplate(this._data);
   }
