@@ -27,8 +27,6 @@ render(tripControlsElement, new TripFilters(), `beforeend`);
 
 const TripList = new TripListPresenter(tripEventsElement);
 
-console.log(pointsToGetTripInfo);
-
 TripList.init(pointsToGetTripInfo);
 
 tripMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, TripList._eventAddButtonHandler);

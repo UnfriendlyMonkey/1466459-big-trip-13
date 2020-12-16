@@ -172,9 +172,7 @@ export default class EditPointForm extends AbstractView {
 
     this._offerOrderedToggleHandler = this._offerOrderedToggleHandler.bind(this);
 
-    this.getElement()
-      .querySelector(`.event__available-offers`)
-      .addEventListener(`click`, this._offerOrderedToggleHandler);
+    this._setInnerHandlers();
   }
 
   getTemplate() {
@@ -203,6 +201,20 @@ export default class EditPointForm extends AbstractView {
     const newElement = this.getElement();
 
     parent.replaceChild(newElement, prevElement);
+
+    this.restoreHandlers();
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormCloseHandler(this._callback.formClose);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+        .querySelector(`.event__available-offers`)
+        .addEventListener(`click`, this._offerOrderedToggleHandler);
   }
 
   _offerOrderedToggleHandler(evt) {
