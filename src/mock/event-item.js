@@ -124,18 +124,18 @@ const getRandomPhotos = () => {
 };
 
 const DESTINATIONS = {
-  Paris: getRandomDescription(),
-  London: getRandomDescription(),
-  Munich: getRandomDescription(),
-  Venice: getRandomDescription(),
-  Barcelona: getRandomDescription(),
-  Portu: getRandomDescription(),
-  Vien: getRandomDescription(),
-  Tokyo: getRandomDescription(),
-  Ivanovo: getRandomDescription(),
-  Mars: getRandomDescription(),
-  Deneb: getRandomDescription(),
-  Sidney: getRandomDescription()
+  Paris: [getRandomDescription(), getRandomPhotos()],
+  London: [getRandomDescription(), getRandomPhotos()],
+  Munich: [getRandomDescription(), getRandomPhotos()],
+  Venice: [getRandomDescription(), getRandomPhotos()],
+  Barcelona: [getRandomDescription(), getRandomPhotos()],
+  Portu: [getRandomDescription(), getRandomPhotos()],
+  Vien: [getRandomDescription(), getRandomPhotos()],
+  Tokyo: [getRandomDescription(), getRandomPhotos()],
+  Ivanovo: [getRandomDescription(), getRandomPhotos()],
+  Mars: [getRandomDescription(), getRandomPhotos()],
+  Deneb: [getRandomDescription(), getRandomPhotos()],
+  Sidney: [getRandomDescription(), getRandomPhotos()]
 };
 
 const getRandomDate = (startDate, maxGap = 10000) => {
@@ -154,8 +154,8 @@ export const generateEventItem = () => {
     eventOffers: EVENT_TYPES[eventType].offers,
     destination: {
       name: destinationName,
-      description: DESTINATIONS[destinationName],
-      photos: getRandomPhotos()
+      description: DESTINATIONS[destinationName][0],
+      photos: DESTINATIONS[destinationName][1]
     },
     startTime: startTime.toDate(),
     endTime: getRandomDate(startTime, 1500).toDate(),
