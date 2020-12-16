@@ -65,7 +65,7 @@ const getOffers = () => {
   return offers;
 };
 
-const EVENT_TYPES = {
+export const EVENT_TYPES = {
   taxi: {
     name: `Taxi`,
     offers: getOffers()
@@ -94,7 +94,7 @@ const EVENT_TYPES = {
     name: `Flight`,
     offers: getOffers()
   },
-  checkin: {
+  [`check-in`]: {
     name: `Check-in`,
     offers: getOffers()
   },
@@ -123,8 +123,8 @@ const getRandomPhotos = () => {
   return photos;
 };
 
-const DESTINATIONS = {
-  Paris: [getRandomDescription(), getRandomPhotos()],
+export const DESTINATIONS = {
+  Amsterdam: [getRandomDescription(), getRandomPhotos()],
   London: [getRandomDescription(), getRandomPhotos()],
   Munich: [getRandomDescription(), getRandomPhotos()],
   Venice: [getRandomDescription(), getRandomPhotos()],
@@ -133,8 +133,8 @@ const DESTINATIONS = {
   Vien: [getRandomDescription(), getRandomPhotos()],
   Tokyo: [getRandomDescription(), getRandomPhotos()],
   Ivanovo: [getRandomDescription(), getRandomPhotos()],
-  Mars: [getRandomDescription(), getRandomPhotos()],
-  Deneb: [getRandomDescription(), getRandomPhotos()],
+  Chamonix: [getRandomDescription(), getRandomPhotos()],
+  Geneva: [getRandomDescription(), getRandomPhotos()],
   Sidney: [getRandomDescription(), getRandomPhotos()]
 };
 

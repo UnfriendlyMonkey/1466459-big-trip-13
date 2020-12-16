@@ -1,5 +1,6 @@
 import Smart from "./smart.js";
 import dayjs from "dayjs";
+import {DESTINATIONS, EVENT_TYPES} from "../mock/event-item.js";
 
 const createEditPointFormTemplate = (item) => {
 
@@ -173,6 +174,8 @@ export default class EditPointForm extends Smart {
 
     this._offerOrderedToggleHandler = this._offerOrderedToggleHandler.bind(this);
     this._priceInputHandler = this._priceInputHandler.bind(this);
+    this._destinationInputHandler = this._destinationInputHandler.bind(this);
+    this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -200,6 +203,21 @@ export default class EditPointForm extends Smart {
     this.getElement()
         .querySelector(`.event__input--price`)
         .addEventListener(`input`, this._priceInputHandler);
+    this.getElement()
+        .querySelector(`.event__input--destination`)
+        .addEventListener(`change`, this._destinationInputHandler);
+    this.getElement()
+        .querySelector(`.event__type-group`)
+        .addEventListener(`change`, this._eventTypeChangeHandler);
+  }
+
+  _eventTypeChangeHandler(evt) {
+    evt.preventDefault();
+    const newType = evt.target.value;
+    this.updateData({
+      eventType: EVENT_TYPES[newType].name,
+      eventOffers: EVENT_TYPES[newType].offers
+    });
   }
 
   _offerOrderedToggleHandler(evt) {
@@ -221,6 +239,19 @@ export default class EditPointForm extends Smart {
     this.updateData({
       price: evt.target.value
     }, true);
+  }
+
+  _destinationInputHandler(evt) {
+    const newDestination = evt.target.value;
+    Object.assign(
+        {},
+        this._data.destination,
+        this._data.destination.name = newDestination,
+        this._data.destination.description = DESTINATIONS[newDestination][0],
+        this._data.destination.photos = DESTINATIONS[newDestination][1]);
+    this.updateData(
+        this._data.destination
+    );
   }
 
   _formSubmitHandler(evt) {
