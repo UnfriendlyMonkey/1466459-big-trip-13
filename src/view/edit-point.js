@@ -165,30 +165,36 @@ const createEditPointFormTemplate = (item) => {
 export default class EditPointForm extends AbstractView {
   constructor(point) {
     super();
-    this._point = point;
+    // this._data = point;
+    this._data = EditPointForm.parsePointToData(point);
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
 
     this._offerOrderedToggleHandler = this._offerOrderedToggleHandler.bind(this);
+    this._priceInputHandler = this._priceInputHandler.bind(this);
 
     this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createEditPointFormTemplate(this._point);
+    return createEditPointFormTemplate(this._data);
   }
 
-  updateData(update) {
+  updateData(update, justDataUpdating) {
     if (!update) {
       return;
     }
 
-    this._point = Object.assign(
+    this._data = Object.assign(
         {},
-        this._point,
+        this._data,
         update
     );
+
+    if (justDataUpdating) {
+      return;
+    }
 
     this.updateElement();
   }
@@ -215,6 +221,9 @@ export default class EditPointForm extends AbstractView {
     this.getElement()
         .querySelector(`.event__available-offers`)
         .addEventListener(`click`, this._offerOrderedToggleHandler);
+    this.getElement()
+        .querySelector(`.event__input--price`)
+        .addEventListener(`input`, this._priceInputHandler);
   }
 
   _offerOrderedToggleHandler(evt) {
@@ -224,15 +233,22 @@ export default class EditPointForm extends AbstractView {
     }
     const label = evt.target.closest(`.event__offer-label`);
     const index = Number.parseInt(label.htmlFor.slice(11), 10);
-    const orderToChange = this._point.eventOffers[index];
+    const orderToChange = this._data.eventOffers[index];
     this.updateData(
         Object.assign({}, orderToChange, orderToChange.isOrdered = !orderToChange.isOrdered)
     );
   }
 
+  _priceInputHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      price: evt.target.value
+    }, true);
+  }
+
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._point);
+    this._callback.formSubmit(EditPointForm.parseDataToPoint(this._data));
   }
 
   _formCloseHandler(evt) {
@@ -248,5 +264,13 @@ export default class EditPointForm extends AbstractView {
   setFormCloseHandler(anotherCallback) {
     this._callback.formClose = anotherCallback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._formCloseHandler);
+  }
+
+  static parsePointToData(point) {
+    return Object.assign({}, point);
+  }
+
+  static parseDataToPoint(data) {
+    return Object.assign({}, data);
   }
 }
