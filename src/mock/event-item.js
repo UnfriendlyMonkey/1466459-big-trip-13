@@ -60,7 +60,10 @@ const getOffers = () => {
   let offers = [];
   const isOffers = getRandomInt(0, 5);
   if (isOffers) {
-    offers = getRandomArray(OPTIONS, 5);
+    offers = getRandomArray(OPTIONS, 5)
+        .map(function (offer) {
+          return Object.assign({}, offer);
+        });
   }
   return offers;
 };
