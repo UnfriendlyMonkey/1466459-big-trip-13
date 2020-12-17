@@ -293,10 +293,10 @@ export default class EditPointForm extends Smart {
   }
 
   static parsePointToData(point) {
-    return Object.assign({}, point);
+    return JSON.parse(JSON.stringify(point));
   }
 
   static parseDataToPoint(data) {
-    return Object.assign({}, data);
+    return JSON.parse(JSON.stringify(data));
   }
 }
