@@ -29,8 +29,8 @@ const createEditPointFormTemplate = (item) => {
   const createOffersListTemplate = (offers) => {
     return offers.reduce(function (accumulator, currentValue, index) {
       return accumulator + `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="${index}" type="checkbox" name="edit-offer-${index}" ${currentValue.isOrdered ? `checked` : ``}>
-        <label class="event__offer-label" for="${index}">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${index}" type="checkbox" name="event-offer-${index}" ${currentValue.isOrdered ? `checked` : ``}>
+        <label class="event__offer-label" for="event-offer-${index}">
           <span class="event__offer-title">${currentValue.name}</span>
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${currentValue.price}</span>
@@ -239,7 +239,7 @@ export default class EditPointForm extends Smart {
     if (!evt.target === `.event__offer-checkbox`) {
       return;
     }
-    const index = evt.target.id;
+    const index = Number.parseInt(evt.target.id.slice(12), 10);
     const offer = this._data.eventOffers[index];
     Object.assign({}, offer, offer.isOrdered = !offer.isOrdered);
     this.updateData(
