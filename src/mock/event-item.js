@@ -60,12 +60,15 @@ const getOffers = () => {
   let offers = [];
   const isOffers = getRandomInt(0, 5);
   if (isOffers) {
-    offers = getRandomArray(OPTIONS, 5);
+    offers = getRandomArray(OPTIONS, 5)
+        .map(function (offer) {
+          return Object.assign({}, offer);
+        });
   }
   return offers;
 };
 
-const EVENT_TYPES = {
+export const EVENT_TYPES = {
   taxi: {
     name: `Taxi`,
     offers: getOffers()
@@ -94,7 +97,7 @@ const EVENT_TYPES = {
     name: `Flight`,
     offers: getOffers()
   },
-  checkin: {
+  [`check-in`]: {
     name: `Check-in`,
     offers: getOffers()
   },
@@ -123,19 +126,19 @@ const getRandomPhotos = () => {
   return photos;
 };
 
-const DESTINATIONS = {
-  Paris: getRandomDescription(),
-  London: getRandomDescription(),
-  Munich: getRandomDescription(),
-  Venice: getRandomDescription(),
-  Barcelona: getRandomDescription(),
-  Portu: getRandomDescription(),
-  Vien: getRandomDescription(),
-  Tokyo: getRandomDescription(),
-  Ivanovo: getRandomDescription(),
-  Mars: getRandomDescription(),
-  Deneb: getRandomDescription(),
-  Sidney: getRandomDescription()
+export const DESTINATIONS = {
+  Amsterdam: [getRandomDescription(), getRandomPhotos()],
+  London: [getRandomDescription(), getRandomPhotos()],
+  Munich: [getRandomDescription(), getRandomPhotos()],
+  Venice: [getRandomDescription(), getRandomPhotos()],
+  Barcelona: [getRandomDescription(), getRandomPhotos()],
+  Portu: [getRandomDescription(), getRandomPhotos()],
+  Vien: [getRandomDescription(), getRandomPhotos()],
+  Tokyo: [getRandomDescription(), getRandomPhotos()],
+  Ivanovo: [getRandomDescription(), getRandomPhotos()],
+  Chamonix: [getRandomDescription(), getRandomPhotos()],
+  Geneva: [getRandomDescription(), getRandomPhotos()],
+  Sidney: [getRandomDescription(), getRandomPhotos()]
 };
 
 const getRandomDate = (startDate, maxGap = 10000) => {
@@ -154,8 +157,8 @@ export const generateEventItem = () => {
     eventOffers: EVENT_TYPES[eventType].offers,
     destination: {
       name: destinationName,
-      description: DESTINATIONS[destinationName],
-      photos: getRandomPhotos()
+      description: DESTINATIONS[destinationName][0],
+      photos: DESTINATIONS[destinationName][1]
     },
     startTime: startTime.toDate(),
     endTime: getRandomDate(startTime, 1500).toDate(),

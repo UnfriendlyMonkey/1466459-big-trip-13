@@ -5,10 +5,10 @@ import {SortType} from "../utils/const.js";
 
 import ListSort from "../view/list-sort.js";
 import EmptyListMessage from "../view/empty-list.js";
-import AddPointForm from "../view/add-point.js";
 import TripEventsList from "../view/trip-event-list.js";
 
 import PointPresenter from "../presenter/point.js";
+import EditPointForm from "../view/edit-point.js";
 
 export default class TripList {
   constructor(listContainer) {
@@ -18,7 +18,7 @@ export default class TripList {
 
     this._tripListComponent = new TripEventsList();
     this._emptyListMessage = new EmptyListMessage();
-    this._addPointForm = new AddPointForm();
+    this._editPointForm = new EditPointForm();
     this._listSort = new ListSort();
 
     this._eventAddButtonHandler = this._eventAddButtonHandler.bind(this);
@@ -72,7 +72,7 @@ export default class TripList {
   }
 
   _renderAddPointForm() {
-    render(this._tripListComponent, this._addPointForm, `afterbegin`);
+    render(this._tripListComponent, this._editPointForm, `afterbegin`);
   }
 
   _renderPoint(point) {

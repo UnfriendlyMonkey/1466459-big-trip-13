@@ -1,5 +1,21 @@
-import AbstractView from "./abstract.js";
+import Smart from "./smart.js";
 import dayjs from "dayjs";
+import {DESTINATIONS, EVENT_TYPES} from "../mock/event-item.js";
+
+const DEFAULT_STATE = {
+  id: null,
+  eventType: `Transport`,
+  eventOffers: [],
+  destination: {
+    name: `Destination`,
+    description: ``,
+    photos: []
+  },
+  startTime: dayjs(),
+  endTime: dayjs(),
+  price: 0,
+  isFavourite: false
+};
 
 const createEditPointFormTemplate = (item) => {
 
@@ -13,8 +29,8 @@ const createEditPointFormTemplate = (item) => {
   const createOffersListTemplate = (offers) => {
     return offers.reduce(function (accumulator, currentValue, index) {
       return accumulator + `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="edit-offer-${index}" type="checkbox" name="edit-offer-${index}" ${currentValue.isOrdered ? `checked` : ``}>
-        <label class="event__offer-label" for="edit-offer-${index}">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${index}" type="checkbox" name="event-offer-${index}" ${currentValue.isOrdered ? `checked` : ``}>
+        <label class="event__offer-label" for="event-offer-${index}">
           <span class="event__offer-title">${currentValue.name}</span>
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${currentValue.price}</span>
@@ -162,22 +178,101 @@ const createEditPointFormTemplate = (item) => {
   </li>`;
 };
 
-export default class EditPointForm extends AbstractView {
-  constructor(point) {
+export default class EditPointForm extends Smart {
+  constructor(point = DEFAULT_STATE) {
     super();
-    this._point = point;
+    this._data = EditPointForm.parsePointToData(point);
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
+
+    this._offerSelectHandler = this._offerSelectHandler.bind(this);
+    this._priceInputHandler = this._priceInputHandler.bind(this);
+    this._destinationInputHandler = this._destinationInputHandler.bind(this);
+    this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
+
+    this._setInnerHandlers();
+  }
+
+  reset(point) {
+    this.updateData(
+        EditPointForm.parsePointToData(point)
+    );
   }
 
   getTemplate() {
-    return createEditPointFormTemplate(this._point);
+    return createEditPointFormTemplate(this._data);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormCloseHandler(this._callback.formClose);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+        .querySelector(`.event__available-offers`)
+        .addEventListener(`change`, this._offerSelectHandler);
+    this.getElement()
+        .querySelector(`.event__input--price`)
+        .addEventListener(`input`, this._priceInputHandler);
+    this.getElement()
+        .querySelector(`.event__input--destination`)
+        .addEventListener(`change`, this._destinationInputHandler);
+    this.getElement()
+        .querySelector(`.event__type-group`)
+        .addEventListener(`change`, this._eventTypeChangeHandler);
+  }
+
+  _eventTypeChangeHandler(evt) {
+    evt.preventDefault();
+    const newType = evt.target.value;
+    this.updateData({
+      eventType: EVENT_TYPES[newType].name,
+      eventOffers: EVENT_TYPES[newType].offers
+    });
+  }
+
+  _offerSelectHandler(evt) {
+    evt.preventDefault();
+    if (!evt.target === `.event__offer-checkbox`) {
+      return;
+    }
+    const index = Number.parseInt(evt.target.id.slice(12), 10);
+    const offer = this._data.eventOffers[index];
+    Object.assign({}, offer, offer.isOrdered = !offer.isOrdered);
+    this.updateData(
+        this._data.eventOffers
+    );
+  }
+
+  _priceInputHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      price: evt.target.value
+    }, true);
+  }
+
+  _destinationInputHandler(evt) {
+    const newDestination = evt.target.value;
+    if (DESTINATIONS[newDestination] === undefined) {
+      return;
+    }
+    Object.assign(
+        {},
+        this._data.destination,
+        this._data.destination.name = newDestination,
+        this._data.destination.description = DESTINATIONS[newDestination][0],
+        this._data.destination.photos = DESTINATIONS[newDestination][1]);
+    this.updateData(
+        this._data.destination
+    );
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._point);
+    this._callback.formSubmit(EditPointForm.parseDataToPoint(this._data));
   }
 
   _formCloseHandler(evt) {
@@ -193,5 +288,13 @@ export default class EditPointForm extends AbstractView {
   setFormCloseHandler(anotherCallback) {
     this._callback.formClose = anotherCallback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._formCloseHandler);
+  }
+
+  static parsePointToData(point) {
+    return JSON.parse(JSON.stringify(point));
+  }
+
+  static parseDataToPoint(data) {
+    return JSON.parse(JSON.stringify(data));
   }
 }

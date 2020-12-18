@@ -70,16 +70,18 @@ export default class PointPresenter {
 
   _onEscHideEditForm(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
+      this._pointEditComponent.reset(this._point);
       this._hideEditForm();
     }
   }
 
-  _handleFormSubmit(task) {
-    this._changeData(task);
+  _handleFormSubmit(point) {
+    this._changeData(point);
     this._hideEditForm();
   }
 
   _handleFormClose() {
+    this._pointEditComponent.reset(this._point);
     this._hideEditForm();
   }
 
