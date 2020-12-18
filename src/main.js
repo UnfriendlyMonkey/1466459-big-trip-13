@@ -31,6 +31,6 @@ render(tripControlsElement, new TripFilters(), `beforeend`);
 
 const TripList = new TripListPresenter(tripEventsElement, pointsModel);
 
-TripList.init(pointsToGetTripInfo);
+TripList.init();
 
 tripMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, TripList._eventAddButtonHandler);

@@ -2,6 +2,7 @@ import TripEventItem from "../view/trip-event-item.js";
 import EditPoint from "../view/edit-point.js";
 
 import {render, replace, remove} from "../utils/render.js";
+import {UserAction, UpdateType} from "../utils/const.js";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -76,7 +77,11 @@ export default class PointPresenter {
   }
 
   _handleFormSubmit(point) {
-    this._changeData(point);
+    this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
+        point
+    );
     this._hideEditForm();
   }
 
@@ -99,6 +104,10 @@ export default class PointPresenter {
   }
 
   _handleFavouriteClick() {
-    this._changeData(Object.assign({}, this._point, {isFavourite: !this._point.isFavourite}));
+    this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
+        Object.assign({}, this._point, {isFavourite: !this._point.isFavourite})
+    );
   }
 }
