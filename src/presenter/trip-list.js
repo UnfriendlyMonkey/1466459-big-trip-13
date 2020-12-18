@@ -18,7 +18,7 @@ export default class TripList {
 
     this._tripListComponent = new TripEventsList();
     this._emptyListMessage = new EmptyListMessage();
-    this._addPointForm = new EditPointForm();
+    this._editPointForm = new EditPointForm();
     this._listSort = new ListSort();
 
     this._eventAddButtonHandler = this._eventAddButtonHandler.bind(this);
@@ -72,7 +72,7 @@ export default class TripList {
   }
 
   _renderAddPointForm() {
-    render(this._tripListComponent, this._addPointForm, `afterbegin`);
+    render(this._tripListComponent, this._editPointForm, `afterbegin`);
   }
 
   _renderPoint(point) {

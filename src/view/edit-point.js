@@ -2,7 +2,7 @@ import Smart from "./smart.js";
 import dayjs from "dayjs";
 import {DESTINATIONS, EVENT_TYPES} from "../mock/event-item.js";
 
-const BLANK_POINT = {
+const DEFAULT_STATE = {
   id: null,
   eventType: `Transport`,
   eventOffers: [],
@@ -29,8 +29,8 @@ const createEditPointFormTemplate = (item) => {
   const createOffersListTemplate = (offers) => {
     return offers.reduce(function (accumulator, currentValue, index) {
       return accumulator + `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="edit-offer-${index}" type="checkbox" name="edit-offer-${index}" ${currentValue.isOrdered ? `checked` : ``}>
-        <label class="event__offer-label" for="edit-offer-${index}">
+        <input class="event__offer-checkbox  visually-hidden" id="${index}" type="checkbox" name="edit-offer-${index}" ${currentValue.isOrdered ? `checked` : ``}>
+        <label class="event__offer-label" for="${index}">
           <span class="event__offer-title">${currentValue.name}</span>
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${currentValue.price}</span>
@@ -179,15 +179,14 @@ const createEditPointFormTemplate = (item) => {
 };
 
 export default class EditPointForm extends Smart {
-  constructor(point = BLANK_POINT) {
+  constructor(point = DEFAULT_STATE) {
     super();
-    // this._data = point;
     this._data = EditPointForm.parsePointToData(point);
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
 
-    this._offerOrderedToggleHandler = this._offerOrderedToggleHandler.bind(this);
+    this._offerSelectHandler = this._offerSelectHandler.bind(this);
     this._priceInputHandler = this._priceInputHandler.bind(this);
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
@@ -214,7 +213,7 @@ export default class EditPointForm extends Smart {
   _setInnerHandlers() {
     this.getElement()
         .querySelector(`.event__available-offers`)
-        .addEventListener(`click`, this._offerOrderedToggleHandler);
+        .addEventListener(`change`, this._offerSelectHandler);
     this.getElement()
         .querySelector(`.event__input--price`)
         .addEventListener(`input`, this._priceInputHandler);
@@ -235,15 +234,14 @@ export default class EditPointForm extends Smart {
     });
   }
 
-  _offerOrderedToggleHandler(evt) {
+  _offerSelectHandler(evt) {
     evt.preventDefault();
-    if (!evt.target.closest(`.event__offer-label`)) {
+    if (!evt.target === `.event__offer-checkbox`) {
       return;
     }
-    const label = evt.target.closest(`.event__offer-label`);
-    const index = Number.parseInt(label.htmlFor.slice(11), 10);
-    const orderToChange = this._data.eventOffers[index];
-    Object.assign({}, orderToChange, orderToChange.isOrdered = !orderToChange.isOrdered);
+    const index = evt.target.id;
+    const offer = this._data.eventOffers[index];
+    Object.assign({}, offer, offer.isOrdered = !offer.isOrdered);
     this.updateData(
         this._data.eventOffers
     );
