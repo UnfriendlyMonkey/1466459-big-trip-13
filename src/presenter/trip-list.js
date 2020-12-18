@@ -11,7 +11,8 @@ import PointPresenter from "../presenter/point.js";
 import EditPointForm from "../view/edit-point.js";
 
 export default class TripList {
-  constructor(listContainer) {
+  constructor(listContainer, pointsModel) {
+    this._pointsModel = pointsModel;
     this._listContainer = listContainer;
     this._pointPresenter = {};
     this._currentSortType = SortType.DAY;
@@ -36,6 +37,10 @@ export default class TripList {
 
     this._renderListSort();
     this._renderList();
+  }
+
+  _getPoints() {
+    return this._pointsModel.getPoints();
   }
 
   _renderEmptyList() {

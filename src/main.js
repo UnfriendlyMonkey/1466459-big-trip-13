@@ -8,7 +8,8 @@ import {render} from "./utils/render.js";
 import {sortByDate} from "./utils/list.js";
 import {INITIAL_POINTS_NUMBER} from "./utils/const.js";
 
-import TripListPresenter from "./presenter/trip-list";
+import TripListPresenter from "./presenter/trip-list.js";
+import TripPointsModel from "./model/trip-points.js";
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
@@ -21,11 +22,14 @@ const eventItems = new Array(25).fill().map(generateEventItem);
 const eventItemsList = eventItems.slice().sort(sortByDate);
 const pointsToGetTripInfo = eventItemsList.slice(0, INITIAL_POINTS_NUMBER);
 
+const pointsModel = new TripPointsModel();
+pointsModel.setPoints(pointsToGetTripInfo);
+
 render(tripMainElement, new TripInfo(pointsToGetTripInfo), `afterbegin`);
 render(tripTabsHeader, new TripTabs(), `afterend`);
 render(tripControlsElement, new TripFilters(), `beforeend`);
 
-const TripList = new TripListPresenter(tripEventsElement);
+const TripList = new TripListPresenter(tripEventsElement, pointsModel);
 
 TripList.init(pointsToGetTripInfo);
 
