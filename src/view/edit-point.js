@@ -185,6 +185,7 @@ export default class EditPointForm extends Smart {
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
 
     this._offerSelectHandler = this._offerSelectHandler.bind(this);
     this._priceInputHandler = this._priceInputHandler.bind(this);
@@ -208,6 +209,7 @@ export default class EditPointForm extends Smart {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormCloseHandler(this._callback.formClose);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _setInnerHandlers() {
@@ -280,6 +282,11 @@ export default class EditPointForm extends Smart {
     this._callback.formClose();
   }
 
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(EditPointForm.parseDataToPoint(this._data));
+  }
+
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector(`.event--edit`).addEventListener(`submit`, this._formSubmitHandler);
@@ -288,6 +295,11 @@ export default class EditPointForm extends Smart {
   setFormCloseHandler(anotherCallback) {
     this._callback.formClose = anotherCallback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._formCloseHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formDeleteClickHandler);
   }
 
   static parsePointToData(point) {
