@@ -149,7 +149,7 @@ const getRandomDate = (startDate, maxGap = 10000) => {
 export const generateEventItem = () => {
   const eventType = getRandomEl(Object.keys(EVENT_TYPES));
   const destinationName = getRandomEl(Object.keys(DESTINATIONS));
-  const startTime = getRandomDate(dayjs(), 10000);
+  const startTime = getRandomDate(dayjs().subtract(2, `day`), 20000);
 
   const eventItem = {
     id: generateId(),
