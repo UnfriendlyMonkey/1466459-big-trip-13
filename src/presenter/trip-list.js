@@ -1,6 +1,6 @@
 import {remove, render} from "../utils/render.js";
 import {sortByDate, sortByDuration, sortByPrice} from "../utils/list.js";
-import {SortType, UpdateType, UserAction} from "../utils/const.js";
+import {SortType, UpdateType, UserAction, FilterType} from "../utils/const.js";
 import {filter} from "../utils/filter.js";
 
 import ListSort from "../view/list-sort.js";
@@ -8,6 +8,7 @@ import EmptyListMessage from "../view/empty-list.js";
 import TripEventsList from "../view/trip-event-list.js";
 
 import PointPresenter from "../presenter/point.js";
+import NewPointPresenter from "../presenter/new-point.js";
 import EditPointForm from "../view/edit-point.js";
 
 export default class TripList {
@@ -31,6 +32,8 @@ export default class TripList {
 
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+
+    this._newPointPresenter = new NewPointPresenter(this._tripListComponent, this._handleViewAction);
   }
 
   init() {
@@ -41,6 +44,12 @@ export default class TripList {
 
     this._renderListSort();
     this._renderList();
+  }
+
+  createPoint() {
+    this._currentSortType = SortType.DAY;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._newPointPresenter.init();
   }
 
   _getPoints() {
@@ -83,9 +92,9 @@ export default class TripList {
     render(this._listContainer, this._listSort, `beforeend`);
   }
 
-  _renderAddPointForm() {
-    render(this._tripListComponent, this._editPointForm, `afterbegin`);
-  }
+  // _renderAddPointForm() {
+  //   render(this._tripListComponent, this._editPointForm, `afterbegin`);
+  // }
 
   _renderPoint(point) {
     const pointPresenter = new PointPresenter(this._tripListComponent, this._handleViewAction, this._modeChangeHandler);
@@ -105,11 +114,13 @@ export default class TripList {
   }
 
   _clearList() {
+    this._newPointPresenter.destroy();
     Object.values(this._pointPresenter).forEach((presenter) => presenter.destroy());
     this._pointPresenter = {};
   }
 
   _clearTripEvents({resetSortType = false} = {}) {
+    this._newPointPresenter.destroy();
     Object
       .values(this._pointPresenter)
       .forEach((presenter) => presenter.destroy());
@@ -123,10 +134,10 @@ export default class TripList {
     }
   }
 
-  _eventAddButtonHandler(evt) {
-    evt.preventDefault();
-    this._renderAddPointForm();
-  }
+  // _eventAddButtonHandler(evt) {
+  //   evt.preventDefault();
+  //   this._renderAddPointForm();
+  // }
 
   _handleModelEvent(updateType, data) {
     switch (updateType) {

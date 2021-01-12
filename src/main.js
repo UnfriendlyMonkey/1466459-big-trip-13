@@ -37,4 +37,7 @@ const filterPresenter = new FilterPresenter(tripControlsElement, filterModel, po
 filterPresenter.init();
 TripList.init();
 
-tripMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, TripList._eventAddButtonHandler);
+tripMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  TripList.createPoint();
+});
