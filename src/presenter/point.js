@@ -1,6 +1,8 @@
 import TripEventItem from "../view/trip-event-item.js";
 import EditPoint from "../view/edit-point.js";
 
+import NewPointPresenter from "./new-point.js";
+
 import {render, replace, remove} from "../utils/render.js";
 import {UserAction, UpdateType} from "../utils/const.js";
 
@@ -102,6 +104,7 @@ export default class PointPresenter {
   }
 
   _showEditForm() {
+    // NewPointPresenter.destroyForm();
     replace(this._pointEditComponent, this._pointComponent);
     document.addEventListener(`keydown`, this._onEscHideEditForm);
     this._changeMode();

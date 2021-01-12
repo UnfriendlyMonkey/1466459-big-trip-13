@@ -7,7 +7,7 @@ const DEFAULT_STATE = {
   eventType: `Transport`,
   eventOffers: [],
   destination: {
-    name: `Destination`,
+    name: `Amsterdam`,
     description: ``,
     photos: []
   },
@@ -25,6 +25,12 @@ const createEditPointFormTemplate = (item) => {
   const end = dayjs(endTime).format(`DD/MM/YY HH:mm`);
 
   const isOffersSectionHidden = eventOffers.length > 0 ? `` : `visually-hidden`;
+
+  const createDestinationsList = (destinations) => {
+    return destinations.reduce((accumulator, currentValue) => {
+      return accumulator + `<option value="${currentValue}"></option>`;
+    }, ``);
+  };
 
   const createOffersListTemplate = (offers) => {
     return offers.reduce(function (accumulator, currentValue, index) {
@@ -128,11 +134,9 @@ const createEditPointFormTemplate = (item) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${eventType}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${placeName} list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" name="event-destination" value=${placeName} list="destination-list-1" required placeholder="Destination">
           <datalist id="destination-list-1">
-            <option value="Amsterdam"></option>
-            <option value="Geneva"></option>
-            <option value="Chamonix"></option>
+            ${createDestinationsList(Object.keys(DESTINATIONS))}
           </datalist>
         </div>
 
@@ -149,7 +153,7 @@ const createEditPointFormTemplate = (item) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value=${price}>
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value=${price}>
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>

@@ -24,7 +24,7 @@ export default class TripList {
     this._editPointForm = new EditPointForm();
     this._listSort = null;
 
-    this._eventAddButtonHandler = this._eventAddButtonHandler.bind(this);
+    // this._eventAddButtonHandler = this._eventAddButtonHandler.bind(this);
     this._modeChangeHandler = this._modeChangeHandler.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -77,8 +77,6 @@ export default class TripList {
     }
 
     this._currentSortType = sortType;
-    // this._clearList();
-    // this._renderPoints();
     this._clearTripEvents();
     this.init();
   }
@@ -91,10 +89,6 @@ export default class TripList {
     this._listSort.setSortTypeChangeHandler(this._handleSortTypeChange);
     render(this._listContainer, this._listSort, `beforeend`);
   }
-
-  // _renderAddPointForm() {
-  //   render(this._tripListComponent, this._editPointForm, `afterbegin`);
-  // }
 
   _renderPoint(point) {
     const pointPresenter = new PointPresenter(this._tripListComponent, this._handleViewAction, this._modeChangeHandler);
@@ -134,11 +128,6 @@ export default class TripList {
     }
   }
 
-  // _eventAddButtonHandler(evt) {
-  //   evt.preventDefault();
-  //   this._renderAddPointForm();
-  // }
-
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
@@ -151,7 +140,7 @@ export default class TripList {
       case UpdateType.MAJOR:
         // not sure about all this
         this._clearTripEvents({resetSortType: true});
-        // may be should make special _renderTripEvents instead of init usage
+        // may be better make special _renderTripEvents instead of init usage
         this.init();
         break;
     }
@@ -172,6 +161,7 @@ export default class TripList {
   }
 
   _modeChangeHandler() {
+    this._newPointPresenter.destroy();
     Object.values(this._pointPresenter).forEach((presenter) => presenter.resetView());
   }
 }
