@@ -31,13 +31,13 @@ const filterModel = new FilterModel();
 render(tripMainElement, new TripInfo(pointsToGetTripInfo), `afterbegin`);
 render(tripTabsHeader, new TripTabs(), `afterend`);
 
-const TripList = new TripListPresenter(tripEventsElement, pointsModel, filterModel);
+const tripList = new TripListPresenter(tripEventsElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(tripControlsElement, filterModel, pointsModel);
 
 filterPresenter.init();
-TripList.init();
+tripList.init();
 
 tripMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
   evt.preventDefault();
-  TripList.createPoint();
+  tripList.createPoint();
 });

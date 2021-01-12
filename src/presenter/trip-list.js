@@ -24,7 +24,6 @@ export default class TripList {
     this._editPointForm = new EditPointForm();
     this._listSort = null;
 
-    // this._eventAddButtonHandler = this._eventAddButtonHandler.bind(this);
     this._modeChangeHandler = this._modeChangeHandler.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -114,11 +113,7 @@ export default class TripList {
   }
 
   _clearTripEvents({resetSortType = false} = {}) {
-    this._newPointPresenter.destroy();
-    Object
-      .values(this._pointPresenter)
-      .forEach((presenter) => presenter.destroy());
-    this._pointPresenter = {};
+    this._clearList();
 
     remove(this._listSort);
     remove(this._emptyListMessage);
