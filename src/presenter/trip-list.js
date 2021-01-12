@@ -34,7 +34,6 @@ export default class TripList {
   }
 
   init() {
-    // this._tripPoints = tripPoints.slice();
     if (this._getPoints().length < 1) {
       this._renderEmptyList();
       return;
@@ -130,7 +129,6 @@ export default class TripList {
   }
 
   _handleModelEvent(updateType, data) {
-    // console.log(updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
         this._pointPresenter[data.id].init(data);
@@ -142,14 +140,13 @@ export default class TripList {
       case UpdateType.MAJOR:
         // not sure about all this
         this._clearTripEvents({resetSortType: true});
-        // may be should make special _renderTripEvents instead of init
+        // may be should make special _renderTripEvents instead of init usage
         this.init();
         break;
     }
   }
 
   _handleViewAction(actionType, updateType, update) {
-    // console.log(actionType, updateType, update);
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this._pointsModel.updatePoint(updateType, update);

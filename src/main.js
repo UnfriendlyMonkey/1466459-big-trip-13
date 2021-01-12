@@ -1,6 +1,5 @@
 import TripInfo from "./view/trip-info.js";
 import TripTabs from "./view/trip-tabs.js";
-// import TripFilters from "./view/trip-filters.js";
 
 import {generateEventItem} from "./mock/event-item.js";
 
@@ -31,7 +30,6 @@ const filterModel = new FilterModel();
 
 render(tripMainElement, new TripInfo(pointsToGetTripInfo), `afterbegin`);
 render(tripTabsHeader, new TripTabs(), `afterend`);
-// render(tripControlsElement, new TripFilters(filters, `everything`), `beforeend`);
 
 const TripList = new TripListPresenter(tripEventsElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(tripControlsElement, filterModel, pointsModel);

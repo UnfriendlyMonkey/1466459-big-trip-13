@@ -26,7 +26,6 @@ export default class TripPointsModel extends Observer {
       update,
       ...this._points.slice(index + 1)
     ];
-    // this._points[index] = update;
 
     this._notify(updateType, update);
   }

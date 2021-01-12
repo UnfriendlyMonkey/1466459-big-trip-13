@@ -1,7 +1,7 @@
 import {getRandomEl, getRandomArray, getRandomInt} from "../utils/common.js";
 import dayjs from "dayjs";
 
-const generateId = () => Date.now() % 1000000 + parseInt(Math.random() * 10000, 10);
+export const generateId = () => Date.now() % 1000000 + parseInt(Math.random() * 10000, 10);
 
 const OPTIONS = [
   {
