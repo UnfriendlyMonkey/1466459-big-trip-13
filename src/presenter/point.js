@@ -2,6 +2,7 @@ import TripEventItem from "../view/trip-event-item.js";
 import EditPoint from "../view/edit-point.js";
 
 import {render, replace, remove} from "../utils/render.js";
+import {UserAction, UpdateType} from "../utils/const.js";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -24,6 +25,7 @@ export default class PointPresenter {
     this._handleFormClose = this._handleFormClose.bind(this);
     this._onEscHideEditForm = this._onEscHideEditForm.bind(this);
     this._handleFavouriteClick = this._handleFavouriteClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(point) {
@@ -40,6 +42,7 @@ export default class PointPresenter {
 
     this._pointEditComponent.setFormSubmitHandler(() => this._handleFormSubmit(this._point));
     this._pointEditComponent.setFormCloseHandler(() => this._handleFormClose());
+    this._pointEditComponent.setDeleteClickHandler(() => this._handleDeleteClick(this._point));
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this._listComponent, this._pointComponent, `beforeend`);
@@ -76,8 +79,21 @@ export default class PointPresenter {
   }
 
   _handleFormSubmit(point) {
-    this._changeData(point);
+    this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.PATCH,
+        // or MINOR if sorting order affected
+        point
+    );
     this._hideEditForm();
+  }
+
+  _handleDeleteClick(point) {
+    this._changeData(
+        UserAction.DELETE_POINT,
+        UpdateType.MINOR,
+        point
+    );
   }
 
   _handleFormClose() {
@@ -99,6 +115,10 @@ export default class PointPresenter {
   }
 
   _handleFavouriteClick() {
-    this._changeData(Object.assign({}, this._point, {isFavourite: !this._point.isFavourite}));
+    this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
+        Object.assign({}, this._point, {isFavourite: !this._point.isFavourite})
+    );
   }
 }
