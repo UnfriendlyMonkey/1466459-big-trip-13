@@ -40,7 +40,7 @@ export default class PointPresenter {
     this._pointComponent.setEditClickHandler(() => this._showEditForm());
     this._pointComponent.setFavouriteClickHandler(this._handleFavouriteClick);
 
-    this._pointEditComponent.setFormSubmitHandler(() => this._handleFormSubmit(this._point));
+    this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setFormCloseHandler(() => this._handleFormClose());
     this._pointEditComponent.setDeleteClickHandler(() => this._handleDeleteClick(this._point));
 
