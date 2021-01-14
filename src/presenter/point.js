@@ -81,8 +81,7 @@ export default class PointPresenter {
   _handleFormSubmit(point) {
     this._changeData(
         UserAction.UPDATE_POINT,
-        UpdateType.PATCH,
-        // or MINOR if sorting order affected
+        UpdateType.MINOR,
         point
     );
     this._hideEditForm();

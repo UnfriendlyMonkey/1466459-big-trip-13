@@ -29,6 +29,8 @@ const createEditPointFormTemplate = (item) => {
 
   const isOffersSectionHidden = eventOffers.length > 0 ? `` : `visually-hidden`;
 
+  const isSubmitDisabled = dayjs(startTime).isAfter(dayjs(endTime));
+
   const createDestinationsList = (destinations) => {
     return destinations.reduce((accumulator, currentValue) => {
       return accumulator + `<option value="${currentValue}"></option>`;
@@ -159,7 +161,7 @@ const createEditPointFormTemplate = (item) => {
           <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value=${price}>
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled ? `disabled` : ``}>Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
@@ -189,6 +191,8 @@ export default class EditPointForm extends Smart {
   constructor(point = DEFAULT_STATE) {
     super();
     this._data = EditPointForm.parsePointToData(point);
+    this._startDatepicker = null;
+    this._endDatepicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
@@ -199,7 +203,12 @@ export default class EditPointForm extends Smart {
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
 
+    this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
+    this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
+
     this._setInnerHandlers();
+    this._setStartDatepicker();
+    this._setEndDatepicker();
   }
 
   reset(point) {
@@ -214,9 +223,45 @@ export default class EditPointForm extends Smart {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setStartDatepicker();
+    this._setEndDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormCloseHandler(this._callback.formClose);
     this.setDeleteClickHandler(this._callback.deleteClick);
+  }
+
+  _setStartDatepicker() {
+    if (this._startDatepicker) {
+      this._startDatepicker.destroy();
+      this._startDatepicker = null;
+    }
+
+    this._startDatepicker = flatpickr(
+        this.getElement().querySelector(`#event-start-time-1`),
+        {
+          enableTime: true,
+          dateFormat: `j/m/y H:i`,
+          defaultDate: dayjs(),
+          onChange: this._startDateChangeHandler
+        }
+    );
+  }
+
+  _setEndDatepicker() {
+    if (this._endDatepicker) {
+      this._endDatepicker.destroy();
+      this._endDatepicker = null;
+    }
+
+    this._endDatepicker = flatpickr(
+        this.getElement().querySelector(`#event-end-time-1`),
+        {
+          enableTime: true,
+          dateFormat: `j/m/y H:i`,
+          defaultDate: dayjs().add(1, `hour`),
+          onChange: this._endDateChangeHandler
+        }
+    );
   }
 
   _setInnerHandlers() {
@@ -254,6 +299,18 @@ export default class EditPointForm extends Smart {
     this.updateData(
         this._data.eventOffers
     );
+  }
+
+  _startDateChangeHandler([userDate]) {
+    this.updateData({
+      startTime: dayjs(userDate).second(59).toDate()
+    });
+  }
+
+  _endDateChangeHandler([userDate]) {
+    this.updateData({
+      endTime: dayjs(userDate).second(59).toDate()
+    });
   }
 
   _priceInputHandler(evt) {
