@@ -1,6 +1,9 @@
 import Smart from "./smart.js";
 import dayjs from "dayjs";
 import {DESTINATIONS, EVENT_TYPES} from "../mock/event-item.js";
+import flatpickr from "flatpickr";
+
+import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const DEFAULT_STATE = {
   id: null,
