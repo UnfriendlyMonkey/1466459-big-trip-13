@@ -302,13 +302,13 @@ export default class EditPointForm extends Smart {
   _startDateChangeHandler([userDate]) {
     this.updateData({
       startTime: dayjs(userDate).toDate()
-    }, true);
+    });
   }
 
   _endDateChangeHandler([userDate]) {
     this.updateData({
       endTime: dayjs(userDate).toDate()
-    }, true);
+    });
   }
 
   _priceInputHandler(evt) {
