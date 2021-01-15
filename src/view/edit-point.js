@@ -241,8 +241,7 @@ export default class EditPointForm extends Smart {
         {
           enableTime: true,
           dateFormat: `j/m/y H:i`,
-          defaultDate: dayjs(),
-          onChange: this._startDateChangeHandler
+          onClose: this._startDateChangeHandler
         }
     );
   }
@@ -258,8 +257,7 @@ export default class EditPointForm extends Smart {
         {
           enableTime: true,
           dateFormat: `j/m/y H:i`,
-          defaultDate: dayjs().add(1, `hour`),
-          onChange: this._endDateChangeHandler
+          onClose: this._endDateChangeHandler
         }
     );
   }
@@ -303,14 +301,14 @@ export default class EditPointForm extends Smart {
 
   _startDateChangeHandler([userDate]) {
     this.updateData({
-      startTime: dayjs(userDate).second(59).toDate()
-    });
+      startTime: dayjs(userDate).toDate()
+    }, true);
   }
 
   _endDateChangeHandler([userDate]) {
     this.updateData({
-      endTime: dayjs(userDate).second(59).toDate()
-    });
+      endTime: dayjs(userDate).toDate()
+    }, true);
   }
 
   _priceInputHandler(evt) {
