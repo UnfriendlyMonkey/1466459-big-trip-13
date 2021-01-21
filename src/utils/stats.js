@@ -15,7 +15,6 @@ export const countPointsByType = (points, type) => {
 export const countMoneyByType = (points, type) => {
   const pointsOfType = points.filter((point) => point.eventType === type);
   return pointsOfType.reduce((acc, val) => {
-    console.log(acc, val.price);
     return acc + val.price;
   }, 0);
 };
