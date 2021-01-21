@@ -1,5 +1,7 @@
 import TripInfo from "./view/trip-info.js";
 import TripTabs from "./view/trip-tabs.js";
+import Stats from "./view/stats.js";
+import TripEvents from "./view/trip-events";
 
 import {generateEventItem} from "./mock/event-item.js";
 
@@ -17,7 +19,8 @@ const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 const tripTabsHeader = tripControlsElement.querySelectorAll(`h2`)[0];
 const tripTabsComponent = new TripTabs();
 
-const tripEventsElement = document.querySelector(`.trip-events`);
+const mainContainerElement = document.querySelector(`.page-main__container`);
+const tripEventsElement = new TripEvents();
 
 const eventItems = new Array(25).fill().map(generateEventItem);
 
@@ -31,19 +34,25 @@ const filterModel = new FilterModel();
 
 render(tripMainElement, new TripInfo(pointsToGetTripInfo), `afterbegin`);
 render(tripTabsHeader, tripTabsComponent, `afterend`);
+render(mainContainerElement, tripEventsElement, `beforeend`);
 
 const tripList = new TripListPresenter(tripEventsElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(tripControlsElement, filterModel, pointsModel);
+const statsElement = new Stats();
 
 const handleTabsClick = (tabsItem) => {
-  console.log(tabsItem);
   tripTabsComponent.setTabsItem(tabsItem);
   switch (tabsItem) {
     case TripTabsItem.TABLE:
-      console.log(`hide Stats, show Table`);
+      statsElement.hideElement();
+      tripList.destroy();
+      tripEventsElement.showElement();
+      tripList.init();
       break;
     case TripTabsItem.STATS:
-      console.log(`hide Table, show Stats`);
+      tripEventsElement.hideElement();
+      statsElement.showElement();
+      tripList.destroy();
       break;
   }
 };
@@ -52,8 +61,13 @@ tripTabsComponent.setTabsClickHandler(handleTabsClick);
 
 filterPresenter.init();
 tripList.init();
+render(mainContainerElement, statsElement, `beforeend`);
 
 tripMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
   evt.preventDefault();
+  tripList.destroy();
+  statsElement.hideElement();
+  tripEventsElement.showElement();
+  tripList.init();
   tripList.createPoint();
 });

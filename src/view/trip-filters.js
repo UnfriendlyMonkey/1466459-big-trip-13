@@ -46,7 +46,9 @@ export default class TripFilters extends AbstractView {
 
   _filterTypeChangeHandler(evt) {
     evt.preventDefault();
-    this._callback.filterTypeChange(evt.target.innerHTML);
+    if (evt.target.classList.contains(`trip-filters__filter-label`)) {
+      this._callback.filterTypeChange(evt.target.innerHTML);
+    }
   }
 
   setFilterTypeChangeHandler(callback) {

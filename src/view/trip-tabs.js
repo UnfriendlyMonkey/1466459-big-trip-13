@@ -22,8 +22,9 @@ export default class TripTabs extends AbstractView {
 
   _tabsClickHandler(evt) {
     // evt.preventDefault();
-    console.log(evt.target.id);
-    this._callback.tabsClick(evt.target.id);
+    if (evt.target.classList.contains(`trip-tabs__btn`)) {
+      this._callback.tabsClick(evt.target.id);
+    }
   }
 
   setTabsClickHandler(callback) {

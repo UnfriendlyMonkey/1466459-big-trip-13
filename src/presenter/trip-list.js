@@ -29,9 +29,6 @@ export default class TripList {
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
-    this._pointsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
-
     this._newPointPresenter = new NewPointPresenter(this._tripListComponent, this._handleViewAction);
   }
 
@@ -43,9 +40,22 @@ export default class TripList {
 
     this._renderListSort();
     this._renderList();
+
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+  }
+
+  destroy() {
+    this._clearTripEvents({resetSortType: true});
+
+    // remove(this._tripListComponent);
+
+    this._pointsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   createPoint() {
+    // this.destroy();
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._newPointPresenter.init();
