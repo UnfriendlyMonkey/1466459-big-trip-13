@@ -3,13 +3,6 @@ import {countPointsByType, countMoneyByType, countTimeByType, makeItemsUniq} fro
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-// Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
-// const eventTypes = points.map((point) => point.eventType);
-// const uniqueTypes = [...new Set(eventTypes)];
-
-// const barsQuantity = uniqueTypes.length;
-// const barsQuantity = 5;
-
 
 const moneyChart = (moneyCtx, points) => {
   const eventTypes = points.map((point) => point.eventType);

@@ -1,4 +1,4 @@
-import {remove, render} from "../utils/render.js";
+import {remove, render, replace} from "../utils/render.js";
 import {sortByDate, sortByDuration, sortByPrice} from "../utils/list.js";
 import {SortType, UpdateType, UserAction, FilterType} from "../utils/const.js";
 import {filter} from "../utils/filter.js";
@@ -10,6 +10,7 @@ import TripEventsList from "../view/trip-event-list.js";
 import PointPresenter from "../presenter/point.js";
 import NewPointPresenter from "../presenter/new-point.js";
 import EditPointForm from "../view/edit-point.js";
+import TripInfo from "../view/trip-info.js";
 
 export default class TripList {
   constructor(listContainer, pointsModel, filterModel) {
@@ -48,7 +49,7 @@ export default class TripList {
   destroy() {
     this._clearTripEvents({resetSortType: true});
 
-    // remove(this._tripListComponent);
+    remove(this._tripListComponent);
 
     this._pointsModel.removeObserver(this._handleModelEvent);
     this._filterModel.removeObserver(this._handleModelEvent);
@@ -134,6 +135,7 @@ export default class TripList {
   }
 
   _handleModelEvent(updateType, data) {
+    this._updateTripInfo();
     switch (updateType) {
       case UpdateType.PATCH:
         this._pointPresenter[data.id].init(data);
@@ -143,9 +145,7 @@ export default class TripList {
         this._renderPoints();
         break;
       case UpdateType.MAJOR:
-        // not sure about all this
         this._clearTripEvents({resetSortType: true});
-        // may be better make special _renderTripEvents instead of init usage
         this.init();
         break;
     }
@@ -168,5 +168,11 @@ export default class TripList {
   _modeChangeHandler() {
     this._newPointPresenter.destroy();
     Object.values(this._pointPresenter).forEach((presenter) => presenter.resetView());
+  }
+
+  _updateTripInfo() {
+    const prevTripInfoComponent = document.querySelector(`.trip-info`);
+    const newTripInfoComponent = new TripInfo(this._pointsModel.getPoints().sort(sortByDate));
+    replace(newTripInfoComponent, prevTripInfoComponent);
   }
 }
