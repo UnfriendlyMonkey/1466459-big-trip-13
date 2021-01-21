@@ -1,5 +1,6 @@
 import AbstractView from "./abstract.js";
 import dayjs from "dayjs";
+import {sortByDate} from "../utils/list.js";
 
 const createTripInfoSectionTemplate = (points) => {
   let fromDate = `...`;
@@ -56,7 +57,7 @@ const createTripInfoSectionTemplate = (points) => {
 export default class TripInfo extends AbstractView {
   constructor(points) {
     super();
-    this._points = points;
+    this._points = points.sort(sortByDate);
   }
 
   getTemplate() {

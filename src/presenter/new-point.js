@@ -46,7 +46,7 @@ export default class NewPoint {
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
-        Object.assign({id: generateId()}, point)
+        Object.assign({}, point, {id: generateId()})
     );
     this.destroy();
   }
