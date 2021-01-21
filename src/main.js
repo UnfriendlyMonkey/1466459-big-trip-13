@@ -5,7 +5,7 @@ import TripEvents from "./view/trip-events";
 
 import {generateEventItem} from "./mock/event-item.js";
 
-import {render} from "./utils/render.js";
+import {remove, render} from "./utils/render.js";
 import {sortByDate} from "./utils/list.js";
 import {INITIAL_POINTS_NUMBER, TripTabsItem} from "./utils/const.js";
 
@@ -38,7 +38,7 @@ render(mainContainerElement, tripEventsElement, `beforeend`);
 
 const tripList = new TripListPresenter(tripEventsElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(tripControlsElement, filterModel, pointsModel);
-const statsElement = new Stats();
+let statsElement = null;
 
 const handleTabsClick = (tabsItem) => {
   tripTabsComponent.setTabsItem(tabsItem);
@@ -48,9 +48,12 @@ const handleTabsClick = (tabsItem) => {
       tripList.destroy();
       tripEventsElement.showElement();
       tripList.init();
+      remove(statsElement);
       break;
     case TripTabsItem.STATS:
       tripEventsElement.hideElement();
+      statsElement = new Stats(pointsModel.getPoints());
+      render(mainContainerElement, statsElement, `beforeend`);
       statsElement.showElement();
       tripList.destroy();
       break;
@@ -61,13 +64,16 @@ tripTabsComponent.setTabsClickHandler(handleTabsClick);
 
 filterPresenter.init();
 tripList.init();
-render(mainContainerElement, statsElement, `beforeend`);
+// render(mainContainerElement, statsElement, `beforeend`);
 
 tripMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
   evt.preventDefault();
   tripList.destroy();
-  statsElement.hideElement();
+  if (statsElement) {
+    statsElement.hideElement();
+  }
   tripEventsElement.showElement();
   tripList.init();
+  tripTabsComponent.setTabsItem(`TABLE`);
   tripList.createPoint();
 });
