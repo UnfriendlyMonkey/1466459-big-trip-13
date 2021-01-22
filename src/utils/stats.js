@@ -8,11 +8,11 @@ export const getPointsByType = (points, type) => {
   return points.filter((point) => point.eventType === type);
 };
 
-export const countPointsByType = (points, type) => {
+export const getQuantityByType = (points, type) => {
   return points.filter((point) => point.eventType === type).length;
 };
 
-export const countMoneyByType = (points, type) => {
+export const getPriceByType = (points, type) => {
   const pointsOfType = points.filter((point) => point.eventType === type);
   return pointsOfType.reduce((acc, val) => {
     return acc + val.price;
@@ -26,7 +26,7 @@ export const getDurationDays = (point) => {
   return duration;
 };
 
-export const countTimeByType = (points, type) => {
+export const getDurationByType = (points, type) => {
   const minutesPerDay = 1440;
   const pointsOfType = getPointsByType(points, type);
   const total = pointsOfType.reduce((acc, val) => {

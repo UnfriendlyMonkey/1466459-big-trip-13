@@ -41,10 +41,9 @@ const filterPresenter = new FilterPresenter(tripControlsElement, filterModel, po
 let statsElement = null;
 
 const handleTabsClick = (tabsItem) => {
-  tripTabsComponent.setTabsItem(tabsItem);
+  tripTabsComponent.setActiveTab(tabsItem);
   switch (tabsItem) {
     case TripTabsItem.TABLE:
-      statsElement.hideElement();
       tripList.destroy();
       tripEventsElement.showElement();
       tripList.init();
@@ -64,16 +63,15 @@ tripTabsComponent.setTabsClickHandler(handleTabsClick);
 
 filterPresenter.init();
 tripList.init();
-// render(mainContainerElement, statsElement, `beforeend`);
 
 tripMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
   evt.preventDefault();
   tripList.destroy();
   if (statsElement) {
-    statsElement.hideElement();
+    remove(statsElement);
   }
   tripEventsElement.showElement();
   tripList.init();
-  tripTabsComponent.setTabsItem(`TABLE`);
+  tripTabsComponent.setActiveTab(`TABLE`);
   tripList.createPoint();
 });

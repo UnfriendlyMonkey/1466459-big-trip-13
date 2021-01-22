@@ -1,5 +1,5 @@
 import Smart from "./smart.js";
-import {countPointsByType, countMoneyByType, countTimeByType, makeItemsUniq} from "../utils/stats.js";
+import {getQuantityByType, getPriceByType, getDurationByType, makeItemsUniq} from "../utils/stats.js";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
@@ -8,7 +8,7 @@ const moneyChart = (moneyCtx, points) => {
   const eventTypes = points.map((point) => point.eventType);
   const uniqueTypes = makeItemsUniq(eventTypes);
   const moneyData = uniqueTypes.map((type) => {
-    return countMoneyByType(points, type);
+    return getPriceByType(points, type);
   });
   return new Chart(moneyCtx, {
     plugins: [ChartDataLabels],
@@ -80,7 +80,7 @@ const typeChart = (typeCtx, points) => {
   const eventTypes = points.map((point) => point.eventType);
   const uniqueTypes = makeItemsUniq(eventTypes);
   const countData = uniqueTypes.map((type) => {
-    return countPointsByType(points, type);
+    return getQuantityByType(points, type);
   });
   return new Chart(typeCtx, {
     plugins: [ChartDataLabels],
@@ -152,7 +152,7 @@ const timeChart = (timeCtx, points) => {
   const eventTypes = points.map((point) => point.eventType);
   const uniqueTypes = makeItemsUniq(eventTypes);
   const timeData = uniqueTypes.map((type) => {
-    return countTimeByType(points, type);
+    return getDurationByType(points, type);
   });
   return new Chart(timeCtx, {
     plugins: [ChartDataLabels],
@@ -224,9 +224,6 @@ const timeChart = (timeCtx, points) => {
 const createStatsTemplate = (points) => {
   const barsQuantity = makeItemsUniq(points).length;
   const BAR_HEIGHT = 55;
-  // moneyCtx.height = BAR_HEIGHT * barsQuantity;
-  // typeCtx.height = BAR_HEIGHT * barsQuantity;
-  // timeCtx.height = BAR_HEIGHT * barsQuantity;
   const height = BAR_HEIGHT * barsQuantity;
   return `<section class="statistics">
     <h2 class="visually-hidden">Trip statistics</h2>

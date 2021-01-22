@@ -21,7 +21,6 @@ export default class TripTabs extends AbstractView {
   }
 
   _tabsClickHandler(evt) {
-    // evt.preventDefault();
     if (evt.target.classList.contains(`trip-tabs__btn`)) {
       this._callback.tabsClick(evt.target.id);
     }
@@ -32,7 +31,7 @@ export default class TripTabs extends AbstractView {
     this.getElement().addEventListener(`click`, this._tabsClickHandler);
   }
 
-  setTabsItem(tabsItem) {
+  setActiveTab(tabsItem) {
     const item = this.getElement().querySelector(`#${tabsItem}`);
     const activeItem = this.getElement().querySelector(`.trip-tabs__btn--active`);
 
