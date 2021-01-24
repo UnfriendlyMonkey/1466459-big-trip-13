@@ -11,7 +11,6 @@ export default class NewPoint {
     this._pointEditComponent = null;
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
-    // this._handleFormClose = this._handleFormClose.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this.destroy = this.destroy.bind(this);
@@ -47,7 +46,7 @@ export default class NewPoint {
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
-        Object.assign({id: generateId()}, point)
+        Object.assign({}, point, {id: generateId()})
     );
     this.destroy();
   }

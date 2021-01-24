@@ -301,20 +301,20 @@ export default class EditPointForm extends Smart {
 
   _startDateChangeHandler([userDate]) {
     this.updateData({
-      startTime: dayjs(userDate).toDate()
+      startTime: userDate
     });
   }
 
   _endDateChangeHandler([userDate]) {
     this.updateData({
-      endTime: dayjs(userDate).toDate()
+      endTime: userDate
     });
   }
 
   _priceInputHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      price: evt.target.value
+      price: parseInt(evt.target.value, 10)
     }, true);
   }
 
@@ -369,6 +369,9 @@ export default class EditPointForm extends Smart {
   }
 
   static parseDataToPoint(data) {
-    return JSON.parse(JSON.stringify(data));
+    const newData = JSON.parse(JSON.stringify(data));
+    newData.startTime = dayjs(newData.startTime).toDate();
+    newData.endTime = dayjs(newData.endTime).toDate();
+    return newData;
   }
 }
