@@ -14,6 +14,11 @@ import FilterPresenter from "./presenter/filters.js";
 import TripPointsModel from "./model/trip-points.js";
 import FilterModel from "./model/filter.js";
 
+import Api from "./api.js";
+
+const AUTHORIZATION = `Basic lniw4o87qhglaijgp938`;
+const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
+
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 const tripTabsHeader = tripControlsElement.querySelectorAll(`h2`)[0];
@@ -23,9 +28,15 @@ const mainContainerElement = document.querySelector(`.page-main__container`);
 const tripEventsElement = new TripEvents();
 
 const eventItems = new Array(25).fill().map(generateEventItem);
+const api = new Api(END_POINT, AUTHORIZATION);
+
+api.getPoints().then((points) => {
+  console.log(points);
+});
 
 const eventItemsList = eventItems.slice().sort(sortByDate);
 const pointsToGetTripInfo = eventItemsList.slice(0, INITIAL_POINTS_NUMBER);
+console.log(pointsToGetTripInfo);
 
 const pointsModel = new TripPointsModel();
 pointsModel.setPoints(pointsToGetTripInfo);
