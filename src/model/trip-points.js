@@ -4,14 +4,35 @@ export default class TripPointsModel extends Observer {
   constructor() {
     super();
     this._points = [];
+    this._destinations = [];
+    this._offers = [];
   }
 
   setPoints(points) {
     this._points = points.slice();
+    console.log(this._points);
   }
 
   getPoints() {
     return this._points;
+  }
+
+  setDestinations(destinations) {
+    this._destinations = destinations.slice();
+    console.log(this._destinations);
+  }
+
+  getDestinations() {
+    return this._destinations;
+  }
+
+  setOffers(offers) {
+    this._offers = offers.slice();
+    console.log(this._offers);
+  }
+
+  getOffers() {
+    return this._offers;
   }
 
   updatePoint(updateType, update) {

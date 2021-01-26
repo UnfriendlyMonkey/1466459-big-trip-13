@@ -1,7 +1,7 @@
 import EditPointForm from "../view/edit-point.js";
 import {remove, render} from "../utils/render.js";
 import {UserAction, UpdateType} from "../utils/const.js";
-import {generateId} from "../mock/event-item.js";
+import {generateId} from "../utils/common.js";
 
 export default class NewPoint {
   constructor(tripListContainer, changeData) {

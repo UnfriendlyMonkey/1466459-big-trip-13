@@ -3,11 +3,11 @@ import TripTabs from "./view/trip-tabs.js";
 import Stats from "./view/stats.js";
 import TripEvents from "./view/trip-events";
 
-import {generateEventItem} from "./mock/event-item.js";
+// import {generateEventItem} from "./mock/event-item.js";
 
 import {remove, render} from "./utils/render.js";
-import {sortByDate} from "./utils/list.js";
-import {INITIAL_POINTS_NUMBER, TripTabsItem} from "./utils/const.js";
+// import {sortByDate} from "./utils/list.js";
+import {TripTabsItem} from "./utils/const.js";
 
 import TripListPresenter from "./presenter/trip-list.js";
 import FilterPresenter from "./presenter/filters.js";
@@ -27,23 +27,18 @@ const tripTabsComponent = new TripTabs();
 const mainContainerElement = document.querySelector(`.page-main__container`);
 const tripEventsElement = new TripEvents();
 
-const eventItems = new Array(25).fill().map(generateEventItem);
+// const eventItems = new Array(25).fill().map(generateEventItem);
 const api = new Api(END_POINT, AUTHORIZATION);
 
-api.getPoints().then((points) => {
-  console.log(points);
-});
-
-const eventItemsList = eventItems.slice().sort(sortByDate);
-const pointsToGetTripInfo = eventItemsList.slice(0, INITIAL_POINTS_NUMBER);
-console.log(pointsToGetTripInfo);
+// const eventItemsList = eventItems.slice().sort(sortByDate);
+// const pointsToGetTripInfo = eventItemsList.slice(0, INITIAL_POINTS_NUMBER);
 
 const pointsModel = new TripPointsModel();
-pointsModel.setPoints(pointsToGetTripInfo);
+// pointsModel.setPoints(pointsToGetTripInfo);
 
 const filterModel = new FilterModel();
 
-render(tripMainElement, new TripInfo(pointsToGetTripInfo), `afterbegin`);
+render(tripMainElement, new TripInfo(), `afterbegin`);
 render(tripTabsHeader, tripTabsComponent, `afterend`);
 render(mainContainerElement, tripEventsElement, `beforeend`);
 
@@ -74,6 +69,16 @@ tripTabsComponent.setTabsClickHandler(handleTabsClick);
 
 filterPresenter.init();
 tripList.init();
+
+api.getPoints().then((points) => {
+  pointsModel.setPoints(points);
+});
+api.getOffers().then((offers) => {
+  pointsModel.setOffers(offers);
+});
+api.getDestinations().then((destinations) => {
+  pointsModel.setDestinations(destinations);
+});
 
 tripMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
   evt.preventDefault();
