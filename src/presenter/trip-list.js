@@ -5,6 +5,7 @@ import {filter} from "../utils/filter.js";
 
 import ListSort from "../view/list-sort.js";
 import EmptyListMessage from "../view/empty-list.js";
+import LoadingMessage from "../view/loading.js";
 import TripEventsList from "../view/trip-event-list.js";
 
 import PointPresenter from "../presenter/point.js";
@@ -19,9 +20,11 @@ export default class TripList {
     this._listContainer = listContainer;
     this._pointPresenter = {};
     this._currentSortType = SortType.DAY;
+    this._isLoading = true;
 
     this._tripListComponent = new TripEventsList();
     this._emptyListMessage = new EmptyListMessage();
+    this._loadingMessage = new LoadingMessage();
     this._editPointForm = new EditPointForm();
     this._listSort = null;
 
@@ -34,6 +37,13 @@ export default class TripList {
   }
 
   init() {
+    console.log(`init`);
+    console.log(this._isLoading);
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     if (this._getPoints().length < 1) {
       this._renderEmptyList();
       return;
@@ -79,6 +89,10 @@ export default class TripList {
 
   _renderEmptyList() {
     render(this._listContainer, this._emptyListMessage, `beforeend`);
+  }
+
+  _renderLoading() {
+    render(this._listContainer, this._loadingMessage, `beforeend`);
   }
 
   _handleSortTypeChange(sortType) {
@@ -128,6 +142,7 @@ export default class TripList {
 
     remove(this._listSort);
     remove(this._emptyListMessage);
+    remove(this._loadingMessage);
 
     if (resetSortType) {
       this._currentSortType = SortType.DAY;
@@ -135,6 +150,8 @@ export default class TripList {
   }
 
   _handleModelEvent(updateType, data) {
+    console.log(`handleModelEvent!!!`)
+    console.log(updateType, data);
     this._updateTripInfo();
     switch (updateType) {
       case UpdateType.PATCH:
@@ -146,6 +163,12 @@ export default class TripList {
         break;
       case UpdateType.MAJOR:
         this._clearTripEvents({resetSortType: true});
+        this.init();
+        break;
+      case UpdateType.INIT:
+        console.log(`INIT!!!`);
+        this._isLoading = false;
+        remove(this._loadingMessage);
         this.init();
         break;
     }
@@ -171,6 +194,8 @@ export default class TripList {
   }
 
   _updateTripInfo() {
+    console.log(`updateInfo!!!`);
+    console.log(this._pointsModel.getPoints());
     const prevTripInfoComponent = document.querySelector(`.trip-info`);
     const newTripInfoComponent = new TripInfo(this._pointsModel.getPoints().sort(sortByDate));
     replace(newTripInfoComponent, prevTripInfoComponent);

@@ -7,7 +7,7 @@ import TripEvents from "./view/trip-events";
 
 import {remove, render} from "./utils/render.js";
 // import {sortByDate} from "./utils/list.js";
-import {TripTabsItem} from "./utils/const.js";
+import {TripTabsItem, UpdateType} from "./utils/const.js";
 
 import TripListPresenter from "./presenter/trip-list.js";
 import FilterPresenter from "./presenter/filters.js";
@@ -70,9 +70,16 @@ tripTabsComponent.setTabsClickHandler(handleTabsClick);
 filterPresenter.init();
 tripList.init();
 
-api.getPoints().then((points) => {
-  pointsModel.setPoints(points);
-});
+api.getPoints()
+  .then((points) => {
+    pointsModel.setPoints(UpdateType.INIT, points);
+  })
+  .then(() => {
+    console.log(`loaded!!!`);
+  })
+  .catch(() => {
+    pointsModel.setPoints(UpdateType.INIT, []);
+  });
 api.getOffers().then((offers) => {
   pointsModel.setOffers(offers);
 });
