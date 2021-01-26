@@ -37,8 +37,6 @@ export default class TripList {
   }
 
   init() {
-    console.log(`init`);
-    console.log(this._isLoading);
     if (this._isLoading) {
       this._renderLoading();
       return;
@@ -150,8 +148,6 @@ export default class TripList {
   }
 
   _handleModelEvent(updateType, data) {
-    console.log(`handleModelEvent!!!`)
-    console.log(updateType, data);
     this._updateTripInfo();
     switch (updateType) {
       case UpdateType.PATCH:
@@ -166,7 +162,6 @@ export default class TripList {
         this.init();
         break;
       case UpdateType.INIT:
-        console.log(`INIT!!!`);
         this._isLoading = false;
         remove(this._loadingMessage);
         this.init();
@@ -194,8 +189,6 @@ export default class TripList {
   }
 
   _updateTripInfo() {
-    console.log(`updateInfo!!!`);
-    console.log(this._pointsModel.getPoints());
     const prevTripInfoComponent = document.querySelector(`.trip-info`);
     const newTripInfoComponent = new TripInfo(this._pointsModel.getPoints().sort(sortByDate));
     replace(newTripInfoComponent, prevTripInfoComponent);

@@ -10,9 +10,6 @@ export default class TripPointsModel extends Observer {
 
   setPoints(updateType, points) {
     this._points = points.slice();
-    console.log(this._points);
-    console.log(updateType);
-    console.log(this._notify);
     this._notify(updateType);
   }
 
@@ -22,7 +19,6 @@ export default class TripPointsModel extends Observer {
 
   setDestinations(destinations) {
     this._destinations = destinations.slice();
-    console.log(this._destinations);
   }
 
   getDestinations() {
@@ -31,7 +27,6 @@ export default class TripPointsModel extends Observer {
 
   setOffers(offers) {
     this._offers = offers.slice();
-    console.log(this._offers);
   }
 
   getOffers() {
