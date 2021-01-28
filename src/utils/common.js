@@ -36,5 +36,3 @@ export const durationString = (beginning, ending) => {
   }
   return `${durationMinutes}M`;
 };
-
-export const generateId = () => Date.now() % 1000000 + parseInt(Math.random() * 10000, 10);

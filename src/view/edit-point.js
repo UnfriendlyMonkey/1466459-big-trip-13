@@ -1,6 +1,5 @@
 import Smart from "./smart.js";
 import dayjs from "dayjs";
-// import {DESTINATIONS, EVENT_TYPES} from "../mock/event-item.js";
 import flatpickr from "flatpickr";
 
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
@@ -196,14 +195,14 @@ const createEditPointFormTemplate = (item, options, destinations) => {
 };
 
 export default class EditPointForm extends Smart {
-  constructor(pointModel, point = DEFAULT_STATE) {
+  constructor(pointsModel, point = DEFAULT_STATE) {
     super();
     this._data = EditPointForm.parsePointToData(point);
     this._startDatepicker = null;
     this._endDatepicker = null;
 
-    this._allOptionsList = pointModel.getOffers();
-    this._allDestinationsList = pointModel.getDestinations();
+    this._allOptionsList = pointsModel.getOffers();
+    this._allDestinationsList = pointsModel.getDestinations();
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
@@ -358,7 +357,6 @@ export default class EditPointForm extends Smart {
         this._data.destination.name = newDestination,
         this._data.destination.description = newDestinationObject.description,
         this._data.destination.photos = newDestinationObject.pictures);
-    debugger
     this.updateData({
       destination: this._data.destination
     });

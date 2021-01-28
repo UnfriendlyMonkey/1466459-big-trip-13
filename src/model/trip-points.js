@@ -140,7 +140,6 @@ export default class TripPointsModel extends Observer {
     });
 
     const adaptedPoint = {
-      "id": point.id.toString(),
       "type": point.eventType.toLowerCase(),
       "date_from": point.startTime.toISOString(),
       "date_to": point.endTime.toISOString(),

@@ -1,7 +1,6 @@
 import EditPointForm from "../view/edit-point.js";
 import {remove, render} from "../utils/render.js";
 import {UserAction, UpdateType} from "../utils/const.js";
-import {generateId} from "../utils/common.js";
 
 export default class NewPoint {
   constructor(tripListContainer, changeData) {
@@ -47,7 +46,7 @@ export default class NewPoint {
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
-        Object.assign({}, point, {id: generateId()})
+        point
     );
     this.destroy();
   }
