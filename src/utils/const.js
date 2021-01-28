@@ -1,4 +1,4 @@
-export const INITIAL_POINTS_NUMBER = 5;
+// export const INITIAL_POINTS_NUMBER = 5;
 
 export const SortType = {
   DAY: `sort-day`,

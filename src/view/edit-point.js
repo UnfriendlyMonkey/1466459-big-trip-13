@@ -1,6 +1,6 @@
 import Smart from "./smart.js";
 import dayjs from "dayjs";
-import {DESTINATIONS, EVENT_TYPES} from "../mock/event-item.js";
+// import {DESTINATIONS, EVENT_TYPES} from "../mock/event-item.js";
 import flatpickr from "flatpickr";
 
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
@@ -20,29 +20,37 @@ const DEFAULT_STATE = {
   isFavourite: false
 };
 
-const createEditPointFormTemplate = (item) => {
+const createEditPointFormTemplate = (item, options, destinations) => {
 
   const {startTime, endTime, price, eventType, eventOffers, destination} = item;
   const placeName = destination.name;
   const start = dayjs(startTime).format(`DD/MM/YY HH:mm`);
   const end = dayjs(endTime).format(`DD/MM/YY HH:mm`);
 
-  const isOffersSectionHidden = eventOffers.length > 0 ? `` : `visually-hidden`;
+  const destinationsNames = destinations.map((dest) => dest.name);
+  const availableOffers = options.filter((offer) => offer.type === eventType.toLowerCase())[0].offers;
+
+  const isOffersSectionHidden = availableOffers.length > 0 ? `` : `visually-hidden`;
 
   const isSubmitDisabled = dayjs(startTime).isAfter(dayjs(endTime));
 
-  const createDestinationsList = (destinations) => {
-    return destinations.reduce((accumulator, currentValue) => {
+  const isOfferOrdered = (offerName) => {
+    const orderedOffers = eventOffers.map((offer) => offer.name);
+    return orderedOffers.indexOf(offerName) !== -1;
+  };
+
+  const createDestinationsList = (dest) => {
+    return dest.reduce((accumulator, currentValue) => {
       return accumulator + `<option value="${currentValue}"></option>`;
     }, ``);
   };
 
-  const createOffersListTemplate = (offers) => {
-    return offers.reduce(function (accumulator, currentValue, index) {
+  const createOffersListTemplate = () => {
+    return availableOffers.reduce(function (accumulator, currentValue, index) {
       return accumulator + `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${index}" type="checkbox" name="event-offer-${index}" ${currentValue.isOrdered ? `checked` : ``}>
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${index}" type="checkbox" name="event-offer-${index}" ${isOfferOrdered(currentValue.title) ? `checked` : ``}>
         <label class="event__offer-label" for="event-offer-${index}">
-          <span class="event__offer-title">${currentValue.name}</span>
+          <span class="event__offer-title">${currentValue.title}</span>
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${currentValue.price}</span>
         </label>
@@ -52,7 +60,7 @@ const createEditPointFormTemplate = (item) => {
 
   const renderPhoto = (photos) => {
     return photos.reduce((accumulator, currentValue) => {
-      return accumulator + `<img class="event__photo" src="${currentValue}" alt="Event photo">`;
+      return accumulator + `<img class="event__photo" src="${currentValue.src}" alt="${currentValue.description}">`;
     }, ``);
   };
 
@@ -141,7 +149,7 @@ const createEditPointFormTemplate = (item) => {
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" name="event-destination" value=${placeName} list="destination-list-1" required placeholder="Destination">
           <datalist id="destination-list-1">
-            ${createDestinationsList(Object.keys(DESTINATIONS))}
+            ${createDestinationsList(destinationsNames)}
           </datalist>
         </div>
 
@@ -172,7 +180,7 @@ const createEditPointFormTemplate = (item) => {
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-            ${createOffersListTemplate(eventOffers)}
+            ${createOffersListTemplate()}
             </div>
           </div>
         </section>
@@ -188,11 +196,14 @@ const createEditPointFormTemplate = (item) => {
 };
 
 export default class EditPointForm extends Smart {
-  constructor(point = DEFAULT_STATE) {
+  constructor(pointModel, point = DEFAULT_STATE) {
     super();
     this._data = EditPointForm.parsePointToData(point);
     this._startDatepicker = null;
     this._endDatepicker = null;
+
+    this._allOptionsList = pointModel.getOffers();
+    this._allDestinationsList = pointModel.getDestinations();
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
@@ -218,7 +229,7 @@ export default class EditPointForm extends Smart {
   }
 
   getTemplate() {
-    return createEditPointFormTemplate(this._data);
+    return createEditPointFormTemplate(this._data, this._allOptionsList, this._allDestinationsList);
   }
 
   restoreHandlers() {
@@ -281,8 +292,8 @@ export default class EditPointForm extends Smart {
     evt.preventDefault();
     const newType = evt.target.value;
     this.updateData({
-      eventType: EVENT_TYPES[newType].name,
-      eventOffers: EVENT_TYPES[newType].offers
+      eventType: newType.charAt(0).toUpperCase() + newType.slice(1),
+      eventOffers: []
     });
   }
 
@@ -291,12 +302,28 @@ export default class EditPointForm extends Smart {
     if (!evt.target === `.event__offer-checkbox`) {
       return;
     }
-    const index = Number.parseInt(evt.target.id.slice(12), 10);
-    const offer = this._data.eventOffers[index];
-    Object.assign({}, offer, offer.isOrdered = !offer.isOrdered);
-    this.updateData(
-        this._data.eventOffers
-    );
+    const label = document.querySelector(`[for="${evt.target.id}"]`);
+    const titleSpan = label.querySelector(`.event__offer-title`);
+    const title = titleSpan.textContent;
+    const orderedOffersNames = this._data.eventOffers.map((offer) => offer.name);
+    const isOrdered = orderedOffersNames.indexOf(title) !== -1;
+    if (isOrdered) {
+      const index = orderedOffersNames.indexOf(title);
+      this._data.eventOffers.splice(index, 1);
+    } else {
+      const eventType = this._data.eventType;
+      const availableOffers = this._allOptionsList.filter((offer) => offer.type === eventType.toLowerCase())[0].offers;
+      const offerToAdd = availableOffers.filter((offer) => offer.title === title)[0];
+      this._data.eventOffers.push({
+        name: offerToAdd.title,
+        price: offerToAdd.price,
+        isOrdered: true
+      });
+    }
+
+    this.updateData({
+      eventOffers: this._data.eventOffers
+    });
   }
 
   _startDateChangeHandler([userDate]) {
@@ -320,18 +347,21 @@ export default class EditPointForm extends Smart {
 
   _destinationInputHandler(evt) {
     const newDestination = evt.target.value;
-    if (DESTINATIONS[newDestination] === undefined) {
+    const destinationsNames = this._allDestinationsList.map((dest) => dest.name);
+    const newDestinationObject = this._allDestinationsList.filter((dest) => dest.name === newDestination)[0];
+    if (destinationsNames.indexOf(newDestination) === -1) {
       return;
     }
     Object.assign(
         {},
         this._data.destination,
         this._data.destination.name = newDestination,
-        this._data.destination.description = DESTINATIONS[newDestination][0],
-        this._data.destination.photos = DESTINATIONS[newDestination][1]);
-    this.updateData(
-        this._data.destination
-    );
+        this._data.destination.description = newDestinationObject.description,
+        this._data.destination.photos = newDestinationObject.pictures);
+    debugger
+    this.updateData({
+      destination: this._data.destination
+    });
   }
 
   _formSubmitHandler(evt) {

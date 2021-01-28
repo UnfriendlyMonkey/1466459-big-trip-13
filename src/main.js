@@ -42,7 +42,7 @@ render(tripMainElement, new TripInfo(), `afterbegin`);
 render(tripTabsHeader, tripTabsComponent, `afterend`);
 render(mainContainerElement, tripEventsElement, `beforeend`);
 
-const tripList = new TripListPresenter(tripEventsElement, pointsModel, filterModel);
+const tripList = new TripListPresenter(tripEventsElement, pointsModel, filterModel, api);
 const filterPresenter = new FilterPresenter(tripControlsElement, filterModel, pointsModel);
 let statsElement = null;
 
@@ -73,9 +73,6 @@ tripList.init();
 api.getPoints()
   .then((points) => {
     pointsModel.setPoints(UpdateType.INIT, points);
-  })
-  .then(() => {
-    console.log(`loaded!!!`);
   })
   .catch(() => {
     pointsModel.setPoints(UpdateType.INIT, []);

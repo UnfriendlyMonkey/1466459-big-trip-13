@@ -10,22 +10,23 @@ import TripEventsList from "../view/trip-event-list.js";
 
 import PointPresenter from "../presenter/point.js";
 import NewPointPresenter from "../presenter/new-point.js";
-import EditPointForm from "../view/edit-point.js";
+// import EditPointForm from "../view/edit-point.js";
 import TripInfo from "../view/trip-info.js";
 
 export default class TripList {
-  constructor(listContainer, pointsModel, filterModel) {
+  constructor(listContainer, pointsModel, filterModel, api) {
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
     this._listContainer = listContainer;
     this._pointPresenter = {};
     this._currentSortType = SortType.DAY;
     this._isLoading = true;
+    this._api = api;
 
     this._tripListComponent = new TripEventsList();
     this._emptyListMessage = new EmptyListMessage();
     this._loadingMessage = new LoadingMessage();
-    this._editPointForm = new EditPointForm();
+    // this._editPointForm = new EditPointForm();
     this._listSort = null;
 
     this._modeChangeHandler = this._modeChangeHandler.bind(this);
@@ -34,6 +35,9 @@ export default class TripList {
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
     this._newPointPresenter = new NewPointPresenter(this._tripListComponent, this._handleViewAction);
+
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -49,9 +53,6 @@ export default class TripList {
 
     this._renderListSort();
     this._renderList();
-
-    this._pointsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   destroy() {
@@ -64,10 +65,9 @@ export default class TripList {
   }
 
   createPoint() {
-    // this.destroy();
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._newPointPresenter.init();
+    this._newPointPresenter.init(this._pointsModel);
   }
 
   _getPoints() {
@@ -114,7 +114,7 @@ export default class TripList {
 
   _renderPoint(point) {
     const pointPresenter = new PointPresenter(this._tripListComponent, this._handleViewAction, this._modeChangeHandler);
-    pointPresenter.init(point);
+    pointPresenter.init(point, this._pointsModel);
     this._pointPresenter[point.id] = pointPresenter;
   }
 
@@ -172,7 +172,10 @@ export default class TripList {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.updatePoint(updateType, update);
+        this._api.updatePoint(update)
+        .then((response) => {
+          this._pointsModel.updatePoint(updateType, response);
+        });
         break;
       case UserAction.ADD_POINT:
         this._pointsModel.addPoint(updateType, update);

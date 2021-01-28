@@ -28,14 +28,14 @@ export default class PointPresenter {
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
-  init(point) {
+  init(point, pointsModel) {
     this._point = point;
 
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._pointEditComponent;
 
     this._pointComponent = new TripEventItem(point);
-    this._pointEditComponent = new EditPoint(point);
+    this._pointEditComponent = new EditPoint(pointsModel, point);
 
     this._pointComponent.setEditClickHandler(() => this._showEditForm());
     this._pointComponent.setFavouriteClickHandler(this._handleFavouriteClick);

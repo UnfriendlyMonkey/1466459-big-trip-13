@@ -79,7 +79,7 @@ export default class TripPointsModel extends Observer {
         {},
         destination,
         {
-          photos: destination.pictures.map((picture) => picture.src),
+          photos: destination.pictures,
         }
     );
 
@@ -99,27 +99,16 @@ export default class TripPointsModel extends Observer {
       return adaptedOrder;
     });
 
-    const adaptedPoint = Object.assign(
-        {},
-        point,
-        {
-          id: parseInt(point.id, 10),
-          eventType: point.type.charAt(0).toUpperCase() + point.type.slice(1),
-          startTime: new Date(point.date_from),
-          endTime: new Date(point.date_to),
-          price: point.base_price,
-          isFavorite: point.is_favorite,
-          destination: adaptedDest,
-          eventOffers: adaptedOffers,
-        }
-    );
-
-    delete adaptedPoint.type;
-    delete adaptedPoint.date_from;
-    delete adaptedPoint.date_to;
-    delete adaptedPoint.is_favorite;
-    delete adaptedPoint.base_price;
-    delete adaptedPoint.offers;
+    const adaptedPoint = {
+      id: parseInt(point.id, 10),
+      eventType: point.type.charAt(0).toUpperCase() + point.type.slice(1),
+      startTime: new Date(point.date_from),
+      endTime: new Date(point.date_to),
+      price: point.base_price,
+      isFavorite: point.is_favorite,
+      destination: adaptedDest,
+      eventOffers: adaptedOffers,
+    };
 
     return adaptedPoint;
   }
@@ -130,12 +119,7 @@ export default class TripPointsModel extends Observer {
         {},
         destination,
         {
-          pictures: destination.photos.map((photo) => {
-            return {
-              "src": photo,
-              "description": `just to fill the description for a while`,
-            };
-          }),
+          pictures: destination.photos,
         }
     );
     delete adaptedDest.photos;
@@ -155,27 +139,16 @@ export default class TripPointsModel extends Observer {
       return adaptedOrder;
     });
 
-    const adaptedPoint = Object.assign(
-        {},
-        point,
-        {
-          "id": point.id.toString(),
-          "type": point.eventType.toLowerCase(),
-          "date_from": point.startTime.toISOString(),
-          "date_to": point.endTime.toISOString(),
-          "is_favorite": point.isFavorite,
-          "base_price": point.price,
-          "destination": adaptedDest,
-          "offers": adaptedOffers,
-        }
-    );
-
-    delete adaptedPoint.eventType;
-    delete adaptedPoint.startTime;
-    delete adaptedPoint.endTime;
-    delete adaptedPoint.isFavorite;
-    delete adaptedPoint.price;
-    delete adaptedPoint.eventOffers;
+    const adaptedPoint = {
+      "id": point.id.toString(),
+      "type": point.eventType.toLowerCase(),
+      "date_from": point.startTime.toISOString(),
+      "date_to": point.endTime.toISOString(),
+      "is_favorite": point.isFavorite,
+      "base_price": point.price,
+      "destination": adaptedDest,
+      "offers": adaptedOffers,
+    };
 
     return adaptedPoint;
   }

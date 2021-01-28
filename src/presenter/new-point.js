@@ -16,12 +16,12 @@ export default class NewPoint {
     this.destroy = this.destroy.bind(this);
   }
 
-  init() {
+  init(pointsModel) {
     if (this._pointEditComponent !== null) {
       return;
     }
 
-    this._pointEditComponent = new EditPointForm();
+    this._pointEditComponent = new EditPointForm(pointsModel);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._pointEditComponent.setFormCloseHandler(this._handleDeleteClick);
@@ -43,6 +43,7 @@ export default class NewPoint {
   }
 
   _handleFormSubmit(point) {
+    debugger
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
