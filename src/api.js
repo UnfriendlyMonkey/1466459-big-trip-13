@@ -46,6 +46,7 @@ export default class Api {
   }
 
   addPoint(point) {
+    debugger
     return this._load({
       url: `points`,
       method: Method.POST,

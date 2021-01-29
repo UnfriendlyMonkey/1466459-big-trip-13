@@ -24,7 +24,7 @@ export default class PointPresenter {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormClose = this._handleFormClose.bind(this);
     this._onEscHideEditForm = this._onEscHideEditForm.bind(this);
-    this._handleFavouriteClick = this._handleFavouriteClick.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
@@ -38,7 +38,7 @@ export default class PointPresenter {
     this._pointEditComponent = new EditPoint(pointsModel, point);
 
     this._pointComponent.setEditClickHandler(() => this._showEditForm());
-    this._pointComponent.setFavouriteClickHandler(this._handleFavouriteClick);
+    this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
 
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setFormCloseHandler(() => this._handleFormClose());
@@ -113,11 +113,11 @@ export default class PointPresenter {
     this._mode = Mode.DEFAULT;
   }
 
-  _handleFavouriteClick() {
+  _handleFavoriteClick() {
     this._changeData(
         UserAction.UPDATE_POINT,
         UpdateType.MINOR,
-        Object.assign({}, this._point, {isFavourite: !this._point.isFavourite})
+        Object.assign({}, this._point, {isFavorite: !this._point.isFavorite})
     );
   }
 }

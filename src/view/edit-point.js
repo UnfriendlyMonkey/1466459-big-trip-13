@@ -16,7 +16,7 @@ const DEFAULT_STATE = {
   startTime: dayjs(),
   endTime: dayjs(),
   price: 0,
-  isFavourite: false
+  isFavorite: false
 };
 
 const createEditPointFormTemplate = (item, options, destinations) => {
