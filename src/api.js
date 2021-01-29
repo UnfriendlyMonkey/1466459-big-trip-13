@@ -35,7 +35,6 @@ export default class Api {
   }
 
   updatePoint(point) {
-    debugger
     return this._load({
       url: `points/${point.id}`,
       method: Method.PUT,
@@ -47,7 +46,6 @@ export default class Api {
   }
 
   addPoint(point) {
-    debugger
     return this._load({
       url: `points`,
       method: Method.POST,
@@ -72,7 +70,6 @@ export default class Api {
     headers = new Headers()
   }) {
     headers.append(`Authorization`, this._authorization);
-
     return fetch(
         `${this._endPoint}/${url}`,
         {method, body, headers}

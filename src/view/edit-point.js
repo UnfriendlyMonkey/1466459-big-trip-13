@@ -5,11 +5,10 @@ import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const DEFAULT_STATE = {
-  // id: null,
-  eventType: `Transport`,
+  eventType: `Flight`,
   eventOffers: [],
   destination: {
-    name: `Amsterdam`,
+    name: ``,
     description: ``,
     photos: []
   },
@@ -23,15 +22,18 @@ const createEditPointFormTemplate = (item, options, destinations) => {
 
   const {startTime, endTime, price, eventType, eventOffers, destination} = item;
   const placeName = destination.name;
+  let placeDescription = destination.description;
+
+  let placePhotos = destination.photos;
+
   const start = dayjs(startTime).format(`DD/MM/YY HH:mm`);
   const end = dayjs(endTime).format(`DD/MM/YY HH:mm`);
 
   const destinationsNames = destinations.map((dest) => dest.name);
-  const availableOffers = options.filter((offer) => offer.type === eventType.toLowerCase())[0].offers;
-
+  const availableOffers = options.length ? options.filter((offer) => offer.type === eventType.toLowerCase())[0].offers : [];
   const isOffersSectionHidden = availableOffers.length > 0 ? `` : `visually-hidden`;
 
-  const isSubmitDisabled = dayjs(startTime).isAfter(dayjs(endTime));
+  const isSubmitDisabled = dayjs(startTime).isAfter(dayjs(endTime)) || !destination.name;
 
   const isOfferOrdered = (offerName) => {
     const orderedOffers = eventOffers.map((offer) => offer.name);
@@ -65,10 +67,10 @@ const createEditPointFormTemplate = (item, options, destinations) => {
 
   const getPhotosTemplate = () => {
     let fragment = ``;
-    if (destination.photos) {
+    if (placePhotos) {
       fragment = `<div class="event__photos-container">
         <div class="event__photos-tape">
-          ${renderPhoto(destination.photos)}
+          ${renderPhoto(placePhotos)}
         </div>
       </div>`;
     }
@@ -146,7 +148,7 @@ const createEditPointFormTemplate = (item, options, destinations) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${eventType}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" name="event-destination" value=${placeName} list="destination-list-1" required placeholder="Destination">
+          <input class="event__input  event__input--destination" id="event-destination-1" name="event-destination" value=${placeName ? placeName : `choose_destination`} list="destination-list-1" required placeholder="Destination">
           <datalist id="destination-list-1">
             ${createDestinationsList(destinationsNames)}
           </datalist>
@@ -186,7 +188,7 @@ const createEditPointFormTemplate = (item, options, destinations) => {
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${destination.description}</p>
+          <p class="event__destination-description">${placeDescription}</p>
           ${getPhotosTemplate()}
         </section>
       </section>
@@ -201,8 +203,8 @@ export default class EditPointForm extends Smart {
     this._startDatepicker = null;
     this._endDatepicker = null;
 
-    this._allOptionsList = pointsModel.getOffers();
     this._allDestinationsList = pointsModel.getDestinations();
+    this._pointsModel = pointsModel;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
@@ -228,7 +230,7 @@ export default class EditPointForm extends Smart {
   }
 
   getTemplate() {
-    return createEditPointFormTemplate(this._data, this._allOptionsList, this._allDestinationsList);
+    return createEditPointFormTemplate(this._data, this._pointsModel.getOffers(), this._pointsModel.getDestinations());
   }
 
   restoreHandlers() {
@@ -311,7 +313,7 @@ export default class EditPointForm extends Smart {
       this._data.eventOffers.splice(index, 1);
     } else {
       const eventType = this._data.eventType;
-      const availableOffers = this._allOptionsList.filter((offer) => offer.type === eventType.toLowerCase())[0].offers;
+      const availableOffers = this._pointsModel.getOffers().filter((offer) => offer.type === eventType.toLowerCase())[0].offers;
       const offerToAdd = availableOffers.filter((offer) => offer.title === title)[0];
       this._data.eventOffers.push({
         name: offerToAdd.title,
@@ -346,8 +348,8 @@ export default class EditPointForm extends Smart {
 
   _destinationInputHandler(evt) {
     const newDestination = evt.target.value;
-    const destinationsNames = this._allDestinationsList.map((dest) => dest.name);
-    const newDestinationObject = this._allDestinationsList.filter((dest) => dest.name === newDestination)[0];
+    const destinationsNames = this._pointsModel.getDestinations().map((dest) => dest.name);
+    const newDestinationObject = this._pointsModel.getDestinations().filter((dest) => dest.name === newDestination)[0];
     if (destinationsNames.indexOf(newDestination) === -1) {
       return;
     }

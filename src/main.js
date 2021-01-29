@@ -27,7 +27,6 @@ const tripEventsElement = new TripEvents();
 const api = new Api(END_POINT, AUTHORIZATION);
 
 const pointsModel = new TripPointsModel();
-
 const filterModel = new FilterModel();
 
 render(tripMainElement, new TripInfo(), `afterbegin`);
@@ -57,29 +56,40 @@ const handleTabsClick = (tabsItem) => {
 
 tripTabsComponent.setTabsClickHandler(handleTabsClick);
 
-api.getPoints()
-.then((points) => {
-  pointsModel.setPoints(UpdateType.INIT, points);
-})
-.catch(() => {
-  pointsModel.setPoints(UpdateType.INIT, []);
-});
-api.getOffers().then((offers) => {
-  pointsModel.setOffers(offers);
-});
-api.getDestinations().then((destinations) => {
-  pointsModel.setDestinations(destinations);
-});
 
 const tripList = new TripListPresenter(tripEventsElement, pointsModel, filterModel, api);
 const filterPresenter = new FilterPresenter(tripControlsElement, filterModel, pointsModel);
+
+Promise.allSettled([
+  api.getOffers(),
+  api.getDestinations(),
+  api.getPoints()
+]).then((results) => {
+  if (results[0].status === `fulfilled`) {
+    pointsModel.setOffers(results[0].value);
+  } else {
+    console.error(results[0].reason);
+  }
+
+  if (results[1].status === `fulfilled`) {
+    pointsModel.setDestinations(results[1].value);
+  } else {
+    console.error(results[1].reason);
+  }
+
+  if (results[2].status === `fulfilled`) {
+    pointsModel.setPoints(UpdateType.INIT, results[2].value);
+  } else {
+    console.error(results[2].reason);
+  }
+});
 
 filterPresenter.init();
 tripList.init();
 
 tripMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
   evt.preventDefault();
-  tripList.destroy();
+  tripList.clear();
   if (statsElement) {
     remove(statsElement);
   }

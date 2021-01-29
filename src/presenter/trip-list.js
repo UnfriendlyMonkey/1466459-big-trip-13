@@ -10,7 +10,6 @@ import TripEventsList from "../view/trip-event-list.js";
 
 import PointPresenter from "../presenter/point.js";
 import NewPointPresenter from "../presenter/new-point.js";
-// import EditPointForm from "../view/edit-point.js";
 import TripInfo from "../view/trip-info.js";
 
 export default class TripList {
@@ -26,7 +25,6 @@ export default class TripList {
     this._tripListComponent = new TripEventsList();
     this._emptyListMessage = new EmptyListMessage();
     this._loadingMessage = new LoadingMessage();
-    // this._editPointForm = new EditPointForm();
     this._listSort = null;
 
     this._modeChangeHandler = this._modeChangeHandler.bind(this);
@@ -45,8 +43,7 @@ export default class TripList {
       this._renderLoading();
       return;
     }
-
-    if (this._getPoints().length < 1) {
+    if (this._pointsModel.getPoints().length < 1) {
       this._renderEmptyList();
       return;
     }
@@ -55,10 +52,14 @@ export default class TripList {
     this._renderList();
   }
 
-  destroy() {
+  clear() {
     this._clearTripEvents({resetSortType: true});
 
     remove(this._tripListComponent);
+  }
+
+  destroy() {
+    this.clear();
 
     this._pointsModel.removeObserver(this._handleModelEvent);
     this._filterModel.removeObserver(this._handleModelEvent);
@@ -159,7 +160,8 @@ export default class TripList {
         break;
       case UpdateType.MAJOR:
         this._clearTripEvents({resetSortType: true});
-        this.init();
+        this._renderListSort();
+        this._renderList();
         break;
       case UpdateType.INIT:
         this._isLoading = false;
