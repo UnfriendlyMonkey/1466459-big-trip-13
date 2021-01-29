@@ -35,6 +35,7 @@ export default class Api {
   }
 
   updatePoint(point) {
+    debugger
     return this._load({
       url: `points/${point.id}`,
       method: Method.PUT,

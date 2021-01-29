@@ -44,7 +44,7 @@ export default class NewPoint {
   _handleFormSubmit(point) {
     this._changeData(
         UserAction.ADD_POINT,
-        UpdateType.MINOR,
+        UpdateType.MAJOR,
         point
     );
     this.destroy();
