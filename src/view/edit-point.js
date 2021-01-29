@@ -5,7 +5,7 @@ import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const DEFAULT_STATE = {
-  id: null,
+  // id: null,
   eventType: `Transport`,
   eventOffers: [],
   destination: {
