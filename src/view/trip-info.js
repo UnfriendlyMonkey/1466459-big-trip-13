@@ -57,7 +57,10 @@ const createTripInfoSectionTemplate = (points) => {
 export default class TripInfo extends AbstractView {
   constructor(points) {
     super();
-    this._points = points.sort(sortByDate);
+    this._points = [];
+    if (points) {
+      this._points = points.sort(sortByDate);
+    }
   }
 
   getTemplate() {

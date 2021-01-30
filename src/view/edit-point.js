@@ -1,48 +1,73 @@
 import Smart from "./smart.js";
 import dayjs from "dayjs";
-import {DESTINATIONS, EVENT_TYPES} from "../mock/event-item.js";
 import flatpickr from "flatpickr";
 
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const DEFAULT_STATE = {
-  id: null,
-  eventType: `Transport`,
+  eventType: `Flight`,
   eventOffers: [],
   destination: {
-    name: `Amsterdam`,
+    name: ``,
     description: ``,
     photos: []
   },
   startTime: dayjs(),
   endTime: dayjs(),
   price: 0,
-  isFavourite: false
+  isFavorite: false
 };
 
-const createEditPointFormTemplate = (item) => {
+const createEditPointFormTemplate = (item, options, destinations) => {
 
-  const {startTime, endTime, price, eventType, eventOffers, destination} = item;
+  const {
+    startTime,
+    endTime,
+    price,
+    eventType,
+    eventOffers,
+    destination,
+    isDisabled,
+    isSaving,
+    isDeleting
+  } = item;
   const placeName = destination.name;
+  let placeDescription = destination.description;
+
+  let placePhotos = destination.photos;
+
   const start = dayjs(startTime).format(`DD/MM/YY HH:mm`);
   const end = dayjs(endTime).format(`DD/MM/YY HH:mm`);
 
-  const isOffersSectionHidden = eventOffers.length > 0 ? `` : `visually-hidden`;
+  const destinationsNames = destinations.map((dest) => dest.name);
+  const availableOffers = options.length ? options.filter((offer) => offer.type === eventType.toLowerCase())[0].offers : [];
+  const isOffersSectionHidden = availableOffers.length > 0 ? `` : `visually-hidden`;
 
-  const isSubmitDisabled = dayjs(startTime).isAfter(dayjs(endTime));
+  const isSubmitDisabled = dayjs(startTime).isAfter(dayjs(endTime)) || !destination.name;
 
-  const createDestinationsList = (destinations) => {
-    return destinations.reduce((accumulator, currentValue) => {
+  const isOfferOrdered = (offerName) => {
+    const orderedOffers = eventOffers.map((offer) => offer.name);
+    return orderedOffers.indexOf(offerName) !== -1;
+  };
+
+  const createDestinationsList = (dest) => {
+    return dest.reduce((accumulator, currentValue) => {
       return accumulator + `<option value="${currentValue}"></option>`;
     }, ``);
   };
 
-  const createOffersListTemplate = (offers) => {
-    return offers.reduce(function (accumulator, currentValue, index) {
+  const createOffersListTemplate = () => {
+    return availableOffers.reduce(function (accumulator, currentValue, index) {
       return accumulator + `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${index}" type="checkbox" name="event-offer-${index}" ${currentValue.isOrdered ? `checked` : ``}>
+        <input
+          class="event__offer-checkbox  visually-hidden"
+          id="event-offer-${index}"
+          type="checkbox"
+          name="event-offer-${index}"
+          ${isOfferOrdered(currentValue.title) ? `checked` : ``}
+          ${isDisabled ? `disabled` : ``}>
         <label class="event__offer-label" for="event-offer-${index}">
-          <span class="event__offer-title">${currentValue.name}</span>
+          <span class="event__offer-title">${currentValue.title}</span>
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${currentValue.price}</span>
         </label>
@@ -52,16 +77,16 @@ const createEditPointFormTemplate = (item) => {
 
   const renderPhoto = (photos) => {
     return photos.reduce((accumulator, currentValue) => {
-      return accumulator + `<img class="event__photo" src="${currentValue}" alt="Event photo">`;
+      return accumulator + `<img class="event__photo" src="${currentValue.src}" alt="${currentValue.description}">`;
     }, ``);
   };
 
   const getPhotosTemplate = () => {
     let fragment = ``;
-    if (destination.photos) {
+    if (placePhotos) {
       fragment = `<div class="event__photos-container">
         <div class="event__photos-tape">
-          ${renderPhoto(destination.photos)}
+          ${renderPhoto(placePhotos)}
         </div>
       </div>`;
     }
@@ -76,7 +101,7 @@ const createEditPointFormTemplate = (item) => {
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${eventType.toLowerCase()}.png" alt="Event type icon">
           </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? `disabled` : ``}>
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
@@ -139,18 +164,27 @@ const createEditPointFormTemplate = (item) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${eventType}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" name="event-destination" value=${placeName} list="destination-list-1" required placeholder="Destination">
+          <input
+            class="event__input
+            event__input--destination"
+            id="event-destination-1"
+            name="event-destination"
+            value=${placeName ? placeName : `choose_destination`}
+            list="destination-list-1"
+            required
+            placeholder="Destination"
+            ${isDisabled ? `disabled` : ``}>
           <datalist id="destination-list-1">
-            ${createDestinationsList(Object.keys(DESTINATIONS))}
+            ${createDestinationsList(destinationsNames)}
           </datalist>
         </div>
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${start}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${start}" ${isDisabled ? `disabled` : ``}>
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${end}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${end}" ${isDisabled ? `disabled` : ``}>
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -158,12 +192,12 @@ const createEditPointFormTemplate = (item) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value=${price}>
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value=${price} ${isDisabled ? `disabled` : ``}>
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled ? `disabled` : ``}>Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
-        <button class="event__rollup-btn" type="button">
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled || isDisabled ? `disabled` : ``}>${isSaving ? `Saving...` : `Save`}</button>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `Deleting...` : `Delete`}</button>
+        <button class="event__rollup-btn" type="button" ${isDisabled ? `disabled` : ``}>
           <span class="visually-hidden">Open event</span>
         </button>
       </header>
@@ -172,14 +206,14 @@ const createEditPointFormTemplate = (item) => {
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-            ${createOffersListTemplate(eventOffers)}
+            ${createOffersListTemplate()}
             </div>
           </div>
         </section>
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${destination.description}</p>
+          <p class="event__destination-description">${placeDescription}</p>
           ${getPhotosTemplate()}
         </section>
       </section>
@@ -188,11 +222,14 @@ const createEditPointFormTemplate = (item) => {
 };
 
 export default class EditPointForm extends Smart {
-  constructor(point = DEFAULT_STATE) {
+  constructor(pointsModel, point = DEFAULT_STATE) {
     super();
     this._data = EditPointForm.parsePointToData(point);
     this._startDatepicker = null;
     this._endDatepicker = null;
+
+    this._allDestinationsList = pointsModel.getDestinations();
+    this._pointsModel = pointsModel;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
@@ -218,7 +255,7 @@ export default class EditPointForm extends Smart {
   }
 
   getTemplate() {
-    return createEditPointFormTemplate(this._data);
+    return createEditPointFormTemplate(this._data, this._pointsModel.getOffers(), this._pointsModel.getDestinations());
   }
 
   restoreHandlers() {
@@ -281,8 +318,8 @@ export default class EditPointForm extends Smart {
     evt.preventDefault();
     const newType = evt.target.value;
     this.updateData({
-      eventType: EVENT_TYPES[newType].name,
-      eventOffers: EVENT_TYPES[newType].offers
+      eventType: newType.charAt(0).toUpperCase() + newType.slice(1),
+      eventOffers: []
     });
   }
 
@@ -291,12 +328,28 @@ export default class EditPointForm extends Smart {
     if (!evt.target === `.event__offer-checkbox`) {
       return;
     }
-    const index = Number.parseInt(evt.target.id.slice(12), 10);
-    const offer = this._data.eventOffers[index];
-    Object.assign({}, offer, offer.isOrdered = !offer.isOrdered);
-    this.updateData(
-        this._data.eventOffers
-    );
+    const label = document.querySelector(`[for="${evt.target.id}"]`);
+    const titleSpan = label.querySelector(`.event__offer-title`);
+    const title = titleSpan.textContent;
+    const orderedOffersNames = this._data.eventOffers.map((offer) => offer.name);
+    const isOrdered = orderedOffersNames.indexOf(title) !== -1;
+    if (isOrdered) {
+      const index = orderedOffersNames.indexOf(title);
+      this._data.eventOffers.splice(index, 1);
+    } else {
+      const eventType = this._data.eventType;
+      const availableOffers = this._pointsModel.getOffers().filter((offer) => offer.type === eventType.toLowerCase())[0].offers;
+      const offerToAdd = availableOffers.filter((offer) => offer.title === title)[0];
+      this._data.eventOffers.push({
+        name: offerToAdd.title,
+        price: offerToAdd.price,
+        isOrdered: true
+      });
+    }
+
+    this.updateData({
+      eventOffers: this._data.eventOffers
+    });
   }
 
   _startDateChangeHandler([userDate]) {
@@ -320,18 +373,20 @@ export default class EditPointForm extends Smart {
 
   _destinationInputHandler(evt) {
     const newDestination = evt.target.value;
-    if (DESTINATIONS[newDestination] === undefined) {
+    const destinationsNames = this._pointsModel.getDestinations().map((dest) => dest.name);
+    const newDestinationObject = this._pointsModel.getDestinations().filter((dest) => dest.name === newDestination)[0];
+    if (destinationsNames.indexOf(newDestination) === -1) {
       return;
     }
     Object.assign(
         {},
         this._data.destination,
         this._data.destination.name = newDestination,
-        this._data.destination.description = DESTINATIONS[newDestination][0],
-        this._data.destination.photos = DESTINATIONS[newDestination][1]);
-    this.updateData(
-        this._data.destination
-    );
+        this._data.destination.description = newDestinationObject.description,
+        this._data.destination.photos = newDestinationObject.pictures);
+    this.updateData({
+      destination: this._data.destination
+    });
   }
 
   _formSubmitHandler(evt) {
@@ -365,13 +420,20 @@ export default class EditPointForm extends Smart {
   }
 
   static parsePointToData(point) {
-    return JSON.parse(JSON.stringify(point));
+    const newData = JSON.parse(JSON.stringify(point));
+    newData.isDisabled = false;
+    newData.isSaving = false;
+    newData.isDeleting = false;
+    return newData;
   }
 
   static parseDataToPoint(data) {
     const newData = JSON.parse(JSON.stringify(data));
     newData.startTime = dayjs(newData.startTime).toDate();
     newData.endTime = dayjs(newData.endTime).toDate();
+    delete newData.isDisabled;
+    delete newData.isSaving;
+    delete newData.isDeleting;
     return newData;
   }
 }

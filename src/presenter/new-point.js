@@ -1,7 +1,6 @@
 import EditPointForm from "../view/edit-point.js";
 import {remove, render} from "../utils/render.js";
 import {UserAction, UpdateType} from "../utils/const.js";
-import {generateId} from "../mock/event-item.js";
 
 export default class NewPoint {
   constructor(tripListContainer, changeData) {
@@ -16,12 +15,12 @@ export default class NewPoint {
     this.destroy = this.destroy.bind(this);
   }
 
-  init() {
+  init(pointsModel) {
     if (this._pointEditComponent !== null) {
       return;
     }
 
-    this._pointEditComponent = new EditPointForm();
+    this._pointEditComponent = new EditPointForm(pointsModel);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._pointEditComponent.setFormCloseHandler(this._handleDeleteClick);
@@ -42,13 +41,32 @@ export default class NewPoint {
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
+  setSaving() {
+    this._pointEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._pointEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    this._pointEditComponent.shake(resetFormState);
+  }
+
+
   _handleFormSubmit(point) {
     this._changeData(
         UserAction.ADD_POINT,
-        UpdateType.MINOR,
-        Object.assign({}, point, {id: generateId()})
+        UpdateType.MAJOR,
+        point
     );
-    this.destroy();
   }
 
   _handleDeleteClick() {

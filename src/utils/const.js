@@ -1,5 +1,3 @@
-export const INITIAL_POINTS_NUMBER = 5;
-
 export const SortType = {
   DAY: `sort-day`,
   PRICE: `sort-price`,
@@ -15,7 +13,8 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
-  MAJOR: `MAJOR`
+  MAJOR: `MAJOR`,
+  INIT: `INIT`,
 };
 
 export const FilterType = {

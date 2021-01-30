@@ -3,16 +3,18 @@ import TripTabs from "./view/trip-tabs.js";
 import Stats from "./view/stats.js";
 import TripEvents from "./view/trip-events";
 
-import {generateEventItem} from "./mock/event-item.js";
-
 import {remove, render} from "./utils/render.js";
-import {sortByDate} from "./utils/list.js";
-import {INITIAL_POINTS_NUMBER, TripTabsItem} from "./utils/const.js";
+import {TripTabsItem, UpdateType} from "./utils/const.js";
 
 import TripListPresenter from "./presenter/trip-list.js";
 import FilterPresenter from "./presenter/filters.js";
 import TripPointsModel from "./model/trip-points.js";
 import FilterModel from "./model/filter.js";
+
+import Api from "./api.js";
+
+const AUTHORIZATION = `Basic lniw4o87qhglaijgp938`;
+const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
@@ -22,22 +24,15 @@ const tripTabsComponent = new TripTabs();
 const mainContainerElement = document.querySelector(`.page-main__container`);
 const tripEventsElement = new TripEvents();
 
-const eventItems = new Array(25).fill().map(generateEventItem);
-
-const eventItemsList = eventItems.slice().sort(sortByDate);
-const pointsToGetTripInfo = eventItemsList.slice(0, INITIAL_POINTS_NUMBER);
+const api = new Api(END_POINT, AUTHORIZATION);
 
 const pointsModel = new TripPointsModel();
-pointsModel.setPoints(pointsToGetTripInfo);
-
 const filterModel = new FilterModel();
 
-render(tripMainElement, new TripInfo(pointsToGetTripInfo), `afterbegin`);
+render(tripMainElement, new TripInfo(), `afterbegin`);
 render(tripTabsHeader, tripTabsComponent, `afterend`);
 render(mainContainerElement, tripEventsElement, `beforeend`);
 
-const tripList = new TripListPresenter(tripEventsElement, pointsModel, filterModel);
-const filterPresenter = new FilterPresenter(tripControlsElement, filterModel, pointsModel);
 let statsElement = null;
 
 const handleTabsClick = (tabsItem) => {
@@ -61,12 +56,40 @@ const handleTabsClick = (tabsItem) => {
 
 tripTabsComponent.setTabsClickHandler(handleTabsClick);
 
+
+const tripList = new TripListPresenter(tripEventsElement, pointsModel, filterModel, api);
+const filterPresenter = new FilterPresenter(tripControlsElement, filterModel, pointsModel);
+
+Promise.allSettled([
+  api.getOffers(),
+  api.getDestinations(),
+  api.getPoints()
+]).then((results) => {
+  if (results[0].status === `fulfilled`) {
+    pointsModel.setOffers(results[0].value);
+  } else {
+    console.error(results[0].reason);
+  }
+
+  if (results[1].status === `fulfilled`) {
+    pointsModel.setDestinations(results[1].value);
+  } else {
+    console.error(results[1].reason);
+  }
+
+  if (results[2].status === `fulfilled`) {
+    pointsModel.setPoints(UpdateType.INIT, results[2].value);
+  } else {
+    console.error(results[2].reason);
+  }
+});
+
 filterPresenter.init();
 tripList.init();
 
 tripMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
   evt.preventDefault();
-  tripList.destroy();
+  tripList.clear();
   if (statsElement) {
     remove(statsElement);
   }

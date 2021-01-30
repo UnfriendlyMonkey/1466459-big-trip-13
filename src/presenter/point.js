@@ -9,6 +9,12 @@ const Mode = {
   EDITING: `EDITING`
 };
 
+export const State = {
+  SAVING: `SAVING`,
+  DELETING: `DELETING`,
+  ABORTING: `ABORTING`
+};
+
 export default class PointPresenter {
   constructor(listComponent, changeData, changeMode) {
     this._listComponent = listComponent;
@@ -24,21 +30,21 @@ export default class PointPresenter {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleFormClose = this._handleFormClose.bind(this);
     this._onEscHideEditForm = this._onEscHideEditForm.bind(this);
-    this._handleFavouriteClick = this._handleFavouriteClick.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
-  init(point) {
+  init(point, pointsModel) {
     this._point = point;
 
     const prevPointComponent = this._pointComponent;
     const prevPointEditComponent = this._pointEditComponent;
 
     this._pointComponent = new TripEventItem(point);
-    this._pointEditComponent = new EditPoint(point);
+    this._pointEditComponent = new EditPoint(pointsModel, point);
 
     this._pointComponent.setEditClickHandler(() => this._showEditForm());
-    this._pointComponent.setFavouriteClickHandler(this._handleFavouriteClick);
+    this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
 
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setFormCloseHandler(() => this._handleFormClose());
@@ -53,7 +59,8 @@ export default class PointPresenter {
       replace(this._pointComponent, prevPointComponent);
     }
     if (this._mode === Mode.EDITING) {
-      replace(this._pointEditComponent, prevPointEditComponent);
+      replace(this._pointComponent, prevPointEditComponent);
+      this._mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -63,6 +70,35 @@ export default class PointPresenter {
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
       this._hideEditForm();
+    }
+  }
+
+  setViewState(state) {
+    const resetFormState = () => {
+      this._pointEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._pointEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true
+        });
+        break;
+      case State.DELETING:
+        this._pointEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true
+        });
+        break;
+      case State.ABORTING:
+        this._pointComponent.shake(resetFormState);
+        this._pointEditComponent.shake(resetFormState);
+        break;
     }
   }
 
@@ -84,7 +120,6 @@ export default class PointPresenter {
         UpdateType.MINOR,
         point
     );
-    this._hideEditForm();
   }
 
   _handleDeleteClick(point) {
@@ -113,11 +148,11 @@ export default class PointPresenter {
     this._mode = Mode.DEFAULT;
   }
 
-  _handleFavouriteClick() {
+  _handleFavoriteClick() {
     this._changeData(
         UserAction.UPDATE_POINT,
         UpdateType.MINOR,
-        Object.assign({}, this._point, {isFavourite: !this._point.isFavourite})
+        Object.assign({}, this._point, {isFavorite: !this._point.isFavorite})
     );
   }
 }
