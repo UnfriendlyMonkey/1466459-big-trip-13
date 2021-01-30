@@ -15,8 +15,8 @@ export const getRandomEl = (array) => {
 };
 
 export const getRandomArray = (array, count) => {
-  let arrayCount = getRandomInt(1, count);
-  let randomArray = [];
+  const arrayCount = getRandomInt(1, count);
+  const randomArray = [];
   for (let i = 0; i < arrayCount; i++) {
     randomArray[i] = getRandomEl(array);
   }

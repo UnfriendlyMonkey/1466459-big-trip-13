@@ -68,19 +68,19 @@ Promise.allSettled([
   if (results[0].status === `fulfilled`) {
     pointsModel.setOffers(results[0].value);
   } else {
-    console.error(results[0].reason);
+    throw new Error(results[0].reason);
   }
 
   if (results[1].status === `fulfilled`) {
     pointsModel.setDestinations(results[1].value);
   } else {
-    console.error(results[1].reason);
+    throw new Error(results[1].reason);
   }
 
   if (results[2].status === `fulfilled`) {
     pointsModel.setPoints(UpdateType.INIT, results[2].value);
   } else {
-    console.error(results[2].reason);
+    throw new Error(results[2].reason);
   }
 });
 
