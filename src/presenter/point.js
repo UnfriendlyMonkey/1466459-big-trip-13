@@ -120,7 +120,6 @@ export default class PointPresenter {
         UpdateType.MINOR,
         point
     );
-    // this._hideEditForm();
   }
 
   _handleDeleteClick(point) {
