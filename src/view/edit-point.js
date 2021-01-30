@@ -31,10 +31,9 @@ const createEditPointFormTemplate = (item, options, destinations) => {
     isSaving,
     isDeleting
   } = item;
-  const placeName = destination.name;
-  let placeDescription = destination.description;
+  const placeDescription = destination.description;
 
-  let placePhotos = destination.photos;
+  const placePhotos = destination.photos;
 
   const start = dayjs(startTime).format(`DD/MM/YY HH:mm`);
   const end = dayjs(endTime).format(`DD/MM/YY HH:mm`);
@@ -169,7 +168,6 @@ const createEditPointFormTemplate = (item, options, destinations) => {
             event__input--destination"
             id="event-destination-1"
             name="event-destination"
-            value=${placeName ? placeName : `choose_destination`}
             list="destination-list-1"
             required
             placeholder="Destination"
