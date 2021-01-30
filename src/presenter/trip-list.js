@@ -8,7 +8,7 @@ import EmptyListMessage from "../view/empty-list.js";
 import LoadingMessage from "../view/loading.js";
 import TripEventsList from "../view/trip-event-list.js";
 
-import PointPresenter from "../presenter/point.js";
+import PointPresenter, {State as PointPresenterViewState} from "../presenter/point.js";
 import NewPointPresenter from "../presenter/new-point.js";
 import TripInfo from "../view/trip-info.js";
 
@@ -174,18 +174,21 @@ export default class TripList {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
+        this._pointPresenter[update.id].setViewState(PointPresenterViewState.SAVING);
         this._api.updatePoint(update)
         .then((response) => {
           this._pointsModel.updatePoint(updateType, response);
         });
         break;
       case UserAction.ADD_POINT:
+        this._newPointPresenter.setSaving();
         this._api.addPoint(update)
         .then((response) => {
           this._pointsModel.addPoint(updateType, response);
         });
         break;
       case UserAction.DELETE_POINT:
+        this._pointPresenter[update.id].setViewState(PointPresenterViewState.DELETING);
         this._api.deletePoint(update)
         .then(() => {
           this._pointsModel.deletePoint(updateType, update);

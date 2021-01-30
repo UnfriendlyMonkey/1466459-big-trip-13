@@ -41,13 +41,20 @@ export default class NewPoint {
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
+  setSaving() {
+    this._pointEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
   _handleFormSubmit(point) {
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MAJOR,
         point
     );
-    this.destroy();
+    // this.destroy();
   }
 
   _handleDeleteClick() {

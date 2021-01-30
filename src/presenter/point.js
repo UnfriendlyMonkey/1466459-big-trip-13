@@ -9,6 +9,11 @@ const Mode = {
   EDITING: `EDITING`
 };
 
+export const State = {
+  SAVING: `SAVING`,
+  DELETING: `DELETING`
+};
+
 export default class PointPresenter {
   constructor(listComponent, changeData, changeMode) {
     this._listComponent = listComponent;
@@ -53,7 +58,8 @@ export default class PointPresenter {
       replace(this._pointComponent, prevPointComponent);
     }
     if (this._mode === Mode.EDITING) {
-      replace(this._pointEditComponent, prevPointEditComponent);
+      replace(this._pointComponent, prevPointEditComponent);
+      this._mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -63,6 +69,23 @@ export default class PointPresenter {
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
       this._hideEditForm();
+    }
+  }
+
+  setViewState(state) {
+    switch (state) {
+      case State.SAVING:
+        this._pointEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true
+        });
+        break;
+      case State.DELETING:
+        this._pointEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true
+        });
+        break;
     }
   }
 
@@ -84,7 +107,7 @@ export default class PointPresenter {
         UpdateType.MINOR,
         point
     );
-    this._hideEditForm();
+    // this._hideEditForm();
   }
 
   _handleDeleteClick(point) {
