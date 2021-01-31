@@ -98,3 +98,7 @@ tripMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`cli
   tripTabsComponent.setActiveTab(`TABLE`);
   tripList.createPoint();
 });
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
