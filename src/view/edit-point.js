@@ -170,6 +170,7 @@ const createEditPointFormTemplate = (item, options, destinations) => {
             name="event-destination"
             list="destination-list-1"
             required
+            value="${destination.name}"
             placeholder="Destination"
             ${isDisabled ? `disabled` : ``}>
           <datalist id="destination-list-1">
