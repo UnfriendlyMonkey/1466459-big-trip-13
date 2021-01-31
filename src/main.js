@@ -11,7 +11,7 @@ import FilterPresenter from "./presenter/filters.js";
 import TripPointsModel from "./model/trip-points.js";
 import FilterModel from "./model/filter.js";
 
-import Api from "./api.js";
+import Api from "./api/api.js";
 
 const AUTHORIZATION = `Basic lniw4o87qhglaijgp938`;
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
