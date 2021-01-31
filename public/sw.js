@@ -31,8 +31,7 @@ self.addEventListener(`install`, (evt) => {
             `/img/icons/sightseeing.png`,
             `/img/icons/taxi.png`,
             `/img/icons/train.png`,
-            `/img/icons/transport.png`
-            // to add after local storage adding
+            `/img/icons/transport.png`,
           ]);
         })
   );

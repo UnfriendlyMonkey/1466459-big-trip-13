@@ -3,6 +3,8 @@ import EditPoint from "../view/edit-point.js";
 
 import {render, replace, remove} from "../utils/render.js";
 import {UserAction, UpdateType} from "../utils/const.js";
+import {isOnline} from "../utils/common.js";
+import {toast} from "../utils/toast/toast.js";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -32,6 +34,7 @@ export default class PointPresenter {
     this._onEscHideEditForm = this._onEscHideEditForm.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
+    this._handleEditClick = this._handleEditClick.bind(this);
   }
 
   init(point, pointsModel) {
@@ -43,7 +46,8 @@ export default class PointPresenter {
     this._pointComponent = new TripEventItem(point);
     this._pointEditComponent = new EditPoint(pointsModel, point);
 
-    this._pointComponent.setEditClickHandler(() => this._showEditForm());
+    // this._pointComponent.setEditClickHandler(() => this._showEditForm());
+    this._pointComponent.setEditClickHandler(this._handleEditClick);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
 
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
@@ -107,6 +111,15 @@ export default class PointPresenter {
     remove(this._pointEditComponent);
   }
 
+  _handleEditClick() {
+    if (!isOnline()) {
+      toast(`You can't edit point offline`);
+      return;
+    }
+
+    this._showEditForm();
+  }
+
   _onEscHideEditForm(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       this._pointEditComponent.reset(this._point);
@@ -115,6 +128,11 @@ export default class PointPresenter {
   }
 
   _handleFormSubmit(point) {
+    if (!isOnline()) {
+      toast(`You can't save point offline`);
+      return;
+    }
+
     this._changeData(
         UserAction.UPDATE_POINT,
         UpdateType.MINOR,
@@ -123,6 +141,11 @@ export default class PointPresenter {
   }
 
   _handleDeleteClick(point) {
+    if (!isOnline()) {
+      toast(`You can't delete point offline`);
+      return;
+    }
+
     this._changeData(
         UserAction.DELETE_POINT,
         UpdateType.MINOR,
