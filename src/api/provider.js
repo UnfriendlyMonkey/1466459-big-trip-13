@@ -72,7 +72,6 @@ export default class Provider {
           return updatedPoint;
         });
     }
-    console.log(point.id, PointsModel.adaptToServer(Object.assign({}, point)));
     this._store.setItem(point.id, PointsModel.adaptToServer(Object.assign({}, point)));
 
     return Promise.resolve(point);
@@ -102,7 +101,6 @@ export default class Provider {
   sync() {
     if (isOnline()) {
       const storePoints = Object.values(this._store.getItems());
-      console.log(storePoints);
 
       return this._api.sync(storePoints)
         .then((response) => {
