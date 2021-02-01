@@ -17,7 +17,7 @@ export const State = {
   ABORTING: `ABORTING`
 };
 
-export default class PointPresenter {
+export default class Point {
   constructor(listComponent, changeData, changeMode) {
     this._listComponent = listComponent;
     this._changeData = changeData;

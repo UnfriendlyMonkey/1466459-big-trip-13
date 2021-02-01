@@ -1,6 +1,6 @@
 import Observer from "../utils/observer.js";
 
-export default class TripPointsModel extends Observer {
+export default class TripPoints extends Observer {
   constructor() {
     super();
     this._points = [];

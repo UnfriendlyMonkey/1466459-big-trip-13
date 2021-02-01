@@ -18,7 +18,7 @@ const DEFAULT_STATE = {
   isFavorite: false
 };
 
-const createEditPointFormTemplate = (item, options, destinations) => {
+const createEditPointTemplate = (item, options, destinations) => {
 
   const {
     startTime,
@@ -228,10 +228,10 @@ const createEditPointFormTemplate = (item, options, destinations) => {
   </li>`;
 };
 
-export default class EditPointForm extends Smart {
+export default class EditPoint extends Smart {
   constructor(pointsModel, point = DEFAULT_STATE) {
     super();
-    this._data = EditPointForm.parsePointToData(point);
+    this._data = EditPoint.parsePointToData(point);
     this._startDatepicker = null;
     this._endDatepicker = null;
 
@@ -257,12 +257,12 @@ export default class EditPointForm extends Smart {
 
   reset(point) {
     this.updateData(
-        EditPointForm.parsePointToData(point)
+        EditPoint.parsePointToData(point)
     );
   }
 
   getTemplate() {
-    return createEditPointFormTemplate(this._data, this._pointsModel.getOffers(), this._pointsModel.getDestinations());
+    return createEditPointTemplate(this._data, this._pointsModel.getOffers(), this._pointsModel.getDestinations());
   }
 
   restoreHandlers() {
@@ -398,7 +398,7 @@ export default class EditPointForm extends Smart {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(EditPointForm.parseDataToPoint(this._data));
+    this._callback.formSubmit(EditPoint.parseDataToPoint(this._data));
   }
 
   _formCloseHandler(evt) {
@@ -408,7 +408,7 @@ export default class EditPointForm extends Smart {
 
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteClick(EditPointForm.parseDataToPoint(this._data));
+    this._callback.deleteClick(EditPoint.parseDataToPoint(this._data));
   }
 
   setFormSubmitHandler(callback) {
