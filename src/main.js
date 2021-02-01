@@ -67,7 +67,6 @@ const handleTabsClick = (tabsItem) => {
 
 tripTabsComponent.setTabsClickHandler(handleTabsClick);
 
-
 const tripList = new TripListPresenter(tripEventsElement, pointsModel, filterModel, apiWithProvider);
 const filterPresenter = new FilterPresenter(tripControlsElement, filterModel, pointsModel);
 

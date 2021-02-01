@@ -3,6 +3,7 @@ import {getQuantityByType, getPriceByType, getDurationByType, makeItemsUniq} fro
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
+const BAR_HEIGHT = 25;
 
 const moneyChart = (moneyCtx, points) => {
   const eventTypes = points.map((point) => point.eventType);
@@ -223,7 +224,6 @@ const timeChart = (timeCtx, points) => {
 
 const createStatsTemplate = (points) => {
   const barsQuantity = makeItemsUniq(points).length;
-  const BAR_HEIGHT = 55;
   const height = BAR_HEIGHT * barsQuantity;
   return `<section class="statistics">
     <h2 class="visually-hidden">Trip statistics</h2>
