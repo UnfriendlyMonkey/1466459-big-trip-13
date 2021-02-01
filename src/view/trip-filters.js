@@ -15,7 +15,7 @@ const createFilterItemTemplate = (filter, currentFilterType) => {
         ${type === currentFilterType ? `checked` : ``}
         ${count === 0 ? `disabled` : ``}
       />
-      <label class="trip-filters__filter-label" for="filter-${type}">${name}</label>
+      <label class="trip-filters__filter-label ${count === 0 ? `trip-filters__filter-label--disabled` : ``}" for="filter-${type}">${name}</label>
     </div>`
   );
 };
@@ -46,7 +46,9 @@ export default class TripFilters extends AbstractView {
 
   _filterTypeChangeHandler(evt) {
     evt.preventDefault();
-    if (evt.target.classList.contains(`trip-filters__filter-label`)) {
+    const allowdedFilter = evt.target.classList.contains(`trip-filters__filter-label`)
+      && !evt.target.classList.contains(`trip-filters__filter-label--disabled`);
+    if (allowdedFilter) {
       this._callback.filterTypeChange(evt.target.innerHTML);
     }
   }

@@ -46,7 +46,6 @@ export default class PointPresenter {
     this._pointComponent = new TripEventItem(point);
     this._pointEditComponent = new EditPoint(pointsModel, point);
 
-    // this._pointComponent.setEditClickHandler(() => this._showEditForm());
     this._pointComponent.setEditClickHandler(this._handleEditClick);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
 
@@ -148,7 +147,7 @@ export default class PointPresenter {
 
     this._changeData(
         UserAction.DELETE_POINT,
-        UpdateType.MINOR,
+        UpdateType.MAJOR,
         point
     );
   }

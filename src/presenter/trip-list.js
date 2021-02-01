@@ -39,11 +39,12 @@ export default class TripList {
   }
 
   init() {
+
     if (this._isLoading) {
       this._renderLoading();
       return;
     }
-    if (this._pointsModel.getPoints().length < 1) {
+    if (this._pointsModel.getPoints().length < 1 || this._getPoints().length < 1) {
       this._renderEmptyList();
       return;
     }
@@ -160,8 +161,7 @@ export default class TripList {
         break;
       case UpdateType.MAJOR:
         this._clearTripEvents({resetSortType: true});
-        this._renderListSort();
-        this._renderList();
+        this.init();
         break;
       case UpdateType.INIT:
         this._isLoading = false;
