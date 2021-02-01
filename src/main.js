@@ -5,16 +5,23 @@ import TripEvents from "./view/trip-events";
 
 import {remove, render} from "./utils/render.js";
 import {TripTabsItem, UpdateType} from "./utils/const.js";
+import {isOnline} from "./utils/common.js";
+import {toast} from "./utils/toast/toast.js";
 
 import TripListPresenter from "./presenter/trip-list.js";
 import FilterPresenter from "./presenter/filters.js";
 import TripPointsModel from "./model/trip-points.js";
 import FilterModel from "./model/filter.js";
 
-import Api from "./api.js";
+import Api from "./api/api.js";
+import Store from "./api/store.js";
+import Provider from "./api/provider.js";
 
 const AUTHORIZATION = `Basic lniw4o87qhglaijgp938`;
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
+const STORE_PREFIX = `big-trip-localstorage`;
+const STORE_VER = `v13`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
@@ -25,6 +32,10 @@ const mainContainerElement = document.querySelector(`.page-main__container`);
 const tripEventsElement = new TripEvents();
 
 const api = new Api(END_POINT, AUTHORIZATION);
+const store = new Store(STORE_NAME, window.localStorage);
+const offersDestStore = new Store(`${STORE_NAME}-OFF-DEST`, window.localStorage);
+const apiWithProvider = new Provider(api, store);
+const offDestProvider = new Provider(api, offersDestStore);
 
 const pointsModel = new TripPointsModel();
 const filterModel = new FilterModel();
@@ -57,13 +68,13 @@ const handleTabsClick = (tabsItem) => {
 tripTabsComponent.setTabsClickHandler(handleTabsClick);
 
 
-const tripList = new TripListPresenter(tripEventsElement, pointsModel, filterModel, api);
+const tripList = new TripListPresenter(tripEventsElement, pointsModel, filterModel, apiWithProvider);
 const filterPresenter = new FilterPresenter(tripControlsElement, filterModel, pointsModel);
 
 Promise.allSettled([
-  api.getOffers(),
-  api.getDestinations(),
-  api.getPoints()
+  offDestProvider.getOffers(),
+  offDestProvider.getDestinations(),
+  apiWithProvider.getPoints()
 ]).then((results) => {
   if (results[0].status === `fulfilled`) {
     pointsModel.setOffers(results[0].value);
@@ -95,6 +106,23 @@ tripMainElement.querySelector(`.trip-main__event-add-btn`).addEventListener(`cli
   }
   tripEventsElement.showElement();
   tripList.init();
+  if (!isOnline()) {
+    toast(`You can't create new point offline`);
+  } else {
+    tripList.createPoint();
+  }
   tripTabsComponent.setActiveTab(`TABLE`);
-  tripList.createPoint();
+});
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  apiWithProvider.sync();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
 });

@@ -36,3 +36,7 @@ export const durationString = (beginning, ending) => {
   }
   return `${durationMinutes}M`;
 };
+
+export const isOnline = () => {
+  return window.navigator.onLine;
+};
