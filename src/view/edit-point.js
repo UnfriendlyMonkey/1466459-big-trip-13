@@ -29,10 +29,11 @@ const createEditPointFormTemplate = (item, options, destinations) => {
     destination,
     isDisabled,
     isSaving,
-    isDeleting
+    isDeleting,
+    id
   } = item;
-  const placeDescription = destination.description;
 
+  const placeDescription = destination.description;
   const placePhotos = destination.photos;
 
   const start = dayjs(startTime).format(`DD/MM/YY HH:mm`);
@@ -43,6 +44,13 @@ const createEditPointFormTemplate = (item, options, destinations) => {
   const isOffersSectionHidden = availableOffers.length > 0 ? `` : `visually-hidden`;
 
   const isSubmitDisabled = dayjs(startTime).isAfter(dayjs(endTime)) || !destination.name;
+  const resetButtonText = () => {
+    if (id === undefined) {
+      return `Cancel`;
+    } else {
+      return isDeleting ? `Deleting...` : `Delete`;
+    }
+  };
 
   const isOfferOrdered = (offerName) => {
     const orderedOffers = eventOffers.map((offer) => offer.name);
@@ -195,7 +203,7 @@ const createEditPointFormTemplate = (item, options, destinations) => {
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled || isDisabled ? `disabled` : ``}>${isSaving ? `Saving...` : `Save`}</button>
-        <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `Deleting...` : `Delete`}</button>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${resetButtonText()}</button>
         <button class="event__rollup-btn" type="button" ${isDisabled ? `disabled` : ``}>
           <span class="visually-hidden">Open event</span>
         </button>
