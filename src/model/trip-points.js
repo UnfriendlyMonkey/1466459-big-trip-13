@@ -144,7 +144,7 @@ export default class TripPoints extends Observer {
       "date_from": point.startTime.toISOString(),
       "date_to": point.endTime.toISOString(),
       "destination": adaptedDest,
-      "id": point.id.toString(),
+      "id": point.id === undefined ? undefined : point.id.toString(),
       "is_favorite": point.isFavorite,
       "offers": adaptedOffers,
       "type": point.eventType.toLowerCase(),
