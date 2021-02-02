@@ -140,14 +140,14 @@ export default class TripPoints extends Observer {
     });
 
     const adaptedPoint = {
-      "id": point.id,
-      "type": point.eventType.toLowerCase(),
+      "base_price": point.price,
       "date_from": point.startTime.toISOString(),
       "date_to": point.endTime.toISOString(),
-      "is_favorite": point.isFavorite,
-      "base_price": point.price,
       "destination": adaptedDest,
+      "id": point.id.toString(),
+      "is_favorite": point.isFavorite,
       "offers": adaptedOffers,
+      "type": point.eventType.toLowerCase(),
     };
 
     return adaptedPoint;
